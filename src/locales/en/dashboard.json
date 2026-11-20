@@ -1,0 +1,29 @@
+{
+  "welcome": "Namaste, {{name}}",
+  "account": "Account",
+  "organization": "Organization",
+  "role": "Role",
+  "emailVerified": "Email verified",
+  "notVerified": "Not verified",
+  "verifiedOn": "Verified on {{date}}",
+  "stats": "Overview",
+  "statEmployees": "Employees",
+  "statParties": "Parties",
+  "statTransactions": "Transactions",
+  "statRevenue": "Revenue",
+  "openMenu": "Open navigation menu",
+  "closeMenu": "Close navigation menu",
+  "userMenu": "User menu",
+  "roles": {
+    "owner": "Owner",
+    "manager": "Manager",
+    "staff": "Staff"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "employees": "Employees",
+    "parties": "Parties",
+    "transactions": "Transactions",
+    "organization": "Organization"
+  }
+}

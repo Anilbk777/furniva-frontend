@@ -1,0 +1,20 @@
+{
+  "setupTitle": "Create your organization",
+  "setupSubtitle": "Name your furniture business to get started.",
+  "name": "Organization name",
+  "namePlaceholder": "e.g. Shree Furniture House",
+  "create": "Create organization",
+  "createSuccess": "Organization created",
+  "updateTitle": "Organization details",
+  "updateSubtitle": "Manage your business information.",
+  "editTitle": "Edit organization",
+  "updateSuccess": "Organization updated",
+  "status": "Status",
+  "active": "Active",
+  "inactive": "Inactive",
+  "createdAt": "Created",
+  "updatedAt": "Updated",
+  "inactiveTitle": "Organization inactive",
+  "inactiveMessage": "This organization is inactive. Contact support to restore access.",
+  "loadError": "Could not load organization details. Please try again."
+}

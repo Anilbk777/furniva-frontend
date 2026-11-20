@@ -1,0 +1,29 @@
+{
+  "welcome": "नमस्ते, {{name}}",
+  "account": "खाता",
+  "organization": "संस्था",
+  "role": "भूमिका",
+  "emailVerified": "इमेल प्रमाणित",
+  "notVerified": "प्रमाणित भएको छैन",
+  "verifiedOn": "{{date}} मा प्रमाणित",
+  "stats": "सारांश",
+  "statEmployees": "कर्मचारी",
+  "statParties": "पार्टी",
+  "statTransactions": "कारोबार",
+  "statRevenue": "आम्दानी",
+  "openMenu": "नेभिगेसन मेन्यु खोल्नुहोस्",
+  "closeMenu": "नेभिगेसन मेन्यु बन्द गर्नुहोस्",
+  "userMenu": "प्रयोगकर्ता मेन्यु",
+  "roles": {
+    "owner": "मालिक",
+    "manager": "प्रबन्धक",
+    "staff": "कर्मचारी"
+  },
+  "nav": {
+    "dashboard": "ड्यासबोर्ड",
+    "employees": "कर्मचारी",
+    "parties": "पार्टी",
+    "transactions": "कारोबार",
+    "organization": "संस्था"
+  }
+}

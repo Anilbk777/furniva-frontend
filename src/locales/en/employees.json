@@ -1,0 +1,82 @@
+{
+  "title": "Employees",
+  "subtitle": "Your team, with this month's payments in one place.",
+  "add": "Add employee",
+  "create": "Save employee",
+  "createSuccess": "Employee added",
+  "updateSuccess": "Employee updated",
+  "deleteSuccess": "Employee removed",
+  "addTitle": "Add employee",
+  "addSubtitle": "Add a new team member with their pay details.",
+  "editTitle": "Edit employee",
+  "editSubtitle": "Update this employee's details.",
+  "detailsTitle": "Employee details",
+  "detailsSubtitle": "Contact and pay information.",
+  "backToList": "All employees",
+  "searchPlaceholder": "Search by name",
+  "filterLabel": "Filter by status",
+  "filter": {
+    "all": "All",
+    "active": "Active",
+    "inactive": "Inactive"
+  },
+  "overview": {
+    "total": "Total employees",
+    "active": "Active",
+    "inactive": "Inactive",
+    "activePayroll": "Active payroll",
+    "inactivePayroll": "Inactive payroll",
+    "perMonth": "/mo",
+    "loading": "Loading employee overview"
+  },
+  "results_one": "{{count}} employee",
+  "results_other": "{{count}} employees",
+  "loadError": "Could not load employees. Please try again.",
+  "emptyTitle": "No employees yet",
+  "emptyBody": "Add your first employee to start tracking advances and salaries.",
+  "emptyFilteredTitle": "No employees match",
+  "emptyFilteredBody": "Try another name or change the status filter.",
+  "noDetails": "No role or phone yet",
+  "noRole": "No role set",
+  "joined": "Joined {{date}}",
+  "view": "View {{name}}",
+  "columns": {
+    "employee": "Employee",
+    "role": "Role",
+    "joined": "Joined (BS)",
+    "salary": "Monthly salary",
+    "status": "Status"
+  },
+  "salaryNotSet": "Not set",
+  "pageOf": "Page {{page}} of {{total}}",
+  "previous": "Previous",
+  "next": "Next",
+  "name": "Full name",
+  "phone": "Phone",
+  "roleTitle": "Role",
+  "rolePlaceholder": "e.g. Salesperson",
+  "monthlySalary": "Monthly salary",
+  "joinedDate": "Joined date (BS)",
+  "joinedDateHint": "Bikram Sambat date, e.g. 2083-01-15",
+  "note": "Note",
+  "markActive": "Mark active",
+  "markInactive": "Mark inactive",
+  "deleteTitle": "Remove {{name}}?",
+  "deleteBody": "They will disappear from the list. Past transactions stay in your records.",
+  "status": {
+    "active": "Active",
+    "inactive": "Inactive"
+  },
+  "kinds": {
+    "employee_advance": "Advance to employee",
+    "employee_salary": "Salary paid"
+  },
+  "paymentMethods": {
+    "cash": "Cash",
+    "bank_transfer": "Bank transfer",
+    "esewa": "eSewa",
+    "khalti": "Khalti",
+    "cheque": "Cheque",
+    "other": "Other"
+  }
+}

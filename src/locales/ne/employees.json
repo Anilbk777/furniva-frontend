@@ -1,0 +1,82 @@
+{
+  "title": "कर्मचारी",
+  "subtitle": "तपाईंको टोली, यो महिनाको भुक्तानीसहित एकै ठाउँमा।",
+  "add": "कर्मचारी थप्नुहोस्",
+  "create": "कर्मचारी सेभ गर्नुहोस्",
+  "createSuccess": "कर्मचारी थपियो",
+  "updateSuccess": "कर्मचारी अद्यावधिक भयो",
+  "deleteSuccess": "कर्मचारी हटाइयो",
+  "addTitle": "कर्मचारी थप्नुहोस्",
+  "addSubtitle": "तलब विवरणसहित नयाँ टोली सदस्य थप्नुहोस्।",
+  "editTitle": "कर्मचारी सम्पादन गर्नुहोस्",
+  "editSubtitle": "यो कर्मचारीको विवरण अद्यावधिक गर्नुहोस्।",
+  "detailsTitle": "कर्मचारी विवरण",
+  "detailsSubtitle": "सम्पर्क र तलबको जानकारी।",
+  "backToList": "सबै कर्मचारी",
+  "searchPlaceholder": "नामले खोज्नुहोस्",
+  "filterLabel": "स्थिति अनुसार छान्नुहोस्",
+  "filter": {
+    "all": "सबै",
+    "active": "सक्रिय",
+    "inactive": "निष्क्रिय"
+  },
+  "overview": {
+    "total": "कुल कर्मचारी",
+    "active": "सक्रिय",
+    "inactive": "निष्क्रिय",
+    "activePayroll": "सक्रिय तलब",
+    "inactivePayroll": "निष्क्रिय तलब",
+    "perMonth": "/महिना",
+    "loading": "कर्मचारी सारांश लोड हुँदै छ"
+  },
+  "results_one": "{{count}} कर्मचारी",
+  "results_other": "{{count}} कर्मचारी",
+  "loadError": "कर्मचारी लोड गर्न सकिएन। कृपया फेरि प्रयास गर्नुहोस्।",
+  "emptyTitle": "अहिलेसम्म कर्मचारी छैन",
+  "emptyBody": "पेस्की र तलब ट्र्याक गर्न पहिलो कर्मचारी थप्नुहोस्।",
+  "emptyFilteredTitle": "कुनै कर्मचारी भेटिएन",
+  "emptyFilteredBody": "अर्को नाम वा स्थिति फिल्टर प्रयास गर्नुहोस्।",
+  "noDetails": "अहिलेसम्म भूमिका वा फोन छैन",
+  "noRole": "भूमिका तोकिएको छैन",
+  "joined": "कार्यग्रहण {{date}}",
+  "view": "{{name}} हेर्नुहोस्",
+  "columns": {
+    "employee": "कर्मचारी",
+    "role": "भूमिका",
+    "joined": "कार्यग्रहण (वि.सं.)",
+    "salary": "मासिक तलब",
+    "status": "स्थिति"
+  },
+  "salaryNotSet": "तोकिएको छैन",
+  "pageOf": "पृष्ठ {{page}} / {{total}}",
+  "previous": "अघिल्लो",
+  "next": "अर्को",
+  "name": "पूरा नाम",
+  "phone": "फोन",
+  "roleTitle": "भूमिका",
+  "rolePlaceholder": "जस्तै: बिक्रेता",
+  "monthlySalary": "मासिक तलब",
+  "joinedDate": "कार्यग्रहण मिति (वि.सं.)",
+  "joinedDateHint": "विक्रम सम्वत् मिति, जस्तै २०८३-०१-१५",
+  "note": "टिप्पणी",
+  "markActive": "सक्रिय बनाउनुहोस्",
+  "markInactive": "निष्क्रिय बनाउनुहोस्",
+  "deleteTitle": "{{name}} हटाउने हो?",
+  "deleteBody": "उनी/उनीहरू सूचीबाट हट्नेछन्। पुराना कारोबार तपाईंको रेकर्डमा रहनेछन्।",
+  "status": {
+    "active": "सक्रिय",
+    "inactive": "निष्क्रिय"
+  },
+  "kinds": {
+    "employee_advance": "कर्मचारीलाई पेस्की",
+    "employee_salary": "तलब भुक्तानी"
+  },
+  "paymentMethods": {
+    "cash": "नगद",
+    "bank_transfer": "बैंक ट्रान्सफर",
+    "esewa": "इसेवा",
+    "khalti": "खल्ती",
+    "cheque": "चेक",
+    "other": "अन्य"
+  }
+}
