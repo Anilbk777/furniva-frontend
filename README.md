@@ -10,12 +10,12 @@ cp .env.example .env
 npm run dev
 ```
 
-The Vite dev server proxies `/api` to `VITE_API_ORIGIN` from `.env`, so keep `VITE_API_URL=/api/v1`.
+API calls go straight to `VITE_API_ORIGIN` + `VITE_API_URL` from `.env`, so the browser talks to the backend origin directly instead of the dev server origin. The Vite dev server keeps the same `/api` proxy as a fallback, and `npm run gen:api` reads `VITE_API_ORIGIN` too.
 
 Environment variables:
 
-- `VITE_API_ORIGIN`: backend origin used only by the Vite dev proxy and API type generation.
-- `VITE_API_URL`: API base path. Use the same-origin `/api/v1` path.
+- `VITE_API_ORIGIN`: backend origin, e.g. `https://furniture-management-system-2bbn.onrender.com`.
+- `VITE_API_URL`: API base path, normally `/api/v1`. An absolute URL here overrides `VITE_API_ORIGIN`.
 - `VITE_USE_MOCKS`: set to `true` to start the MSW browser worker in development.
 
 ## Scripts

@@ -13,8 +13,9 @@ interface Account {
   organizationUpdatedAt: string | null
 }
 
-const base = `${env.VITE_API_URL}/auth`
-const organizationBase = `${env.VITE_API_URL}/organizations`
+const apiBase = env.apiBaseUrl
+const base = `${apiBase}/auth`
+const organizationBase = `${apiBase}/organizations`
 const accounts = new Map<string, Account>()
 let currentUserId: string | null = null
 let demoPassword = 'Password1!'
@@ -143,8 +144,8 @@ function findBy(identifier: string): Account | undefined {
   )
 }
 
-const employeeBase = `${env.VITE_API_URL}/employees`
-const transactionBase = `${env.VITE_API_URL}/transactions`
+const employeeBase = `${apiBase}/employees`
+const transactionBase = `${apiBase}/transactions`
 
 interface MockEmployee {
   id: string
