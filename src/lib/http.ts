@@ -4,7 +4,7 @@ import { env } from 'src/lib/env'
 import { clearSessionCache } from 'src/lib/queryClient'
 
 export const http = axios.create({
-  baseURL: env.apiBaseUrl,
+  baseURL: env.VITE_API_URL,
   withCredentials: true,
   timeout:30000,
   headers: { 'Content-Type': 'application/json' },

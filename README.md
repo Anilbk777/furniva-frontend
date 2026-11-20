@@ -10,12 +10,12 @@ cp .env.example .env
 npm run dev
 ```
 
-API calls go straight to `VITE_API_ORIGIN` + `VITE_API_URL` from `.env`, so the browser talks to the backend origin directly instead of the dev server origin. The Vite dev server keeps the same `/api` proxy as a fallback, and `npm run gen:api` reads `VITE_API_ORIGIN` too.
+API calls stay on the frontend origin and are forwarded to the backend, so auth cookies remain first-party: the Vite dev server proxies `/api` to `VITE_API_ORIGIN`, and `vercel.json` rewrites `/api/*` to the same backend in production. `npm run gen:api` reads `VITE_API_ORIGIN` too.
 
 Environment variables:
 
-- `VITE_API_ORIGIN`: backend origin, e.g. `https://furniture-management-system-2bbn.onrender.com`.
-- `VITE_API_URL`: API base path, normally `/api/v1`. An absolute URL here overrides `VITE_API_ORIGIN`.
+- `VITE_API_ORIGIN`: backend origin, e.g. `https://furniture-management-system-2bbn.onrender.com`. Used by the dev proxy, as the `vercel.json` rewrite target, and by API type generation.
+- `VITE_API_URL`: API base path, normally `/api/v1`. Leave it relative — an absolute cross-origin value sends cookies as third-party cookies and breaks login on browsers that block them.
 - `VITE_USE_MOCKS`: set to `true` to start the MSW browser worker in development.
 
 ## Scripts
