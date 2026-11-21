@@ -1,5 +1,5 @@
 import {
-  ArrowLeftRight,
+  CalendarCheck,
   ContactRound,
   LayoutDashboard,
   Store,
@@ -30,16 +30,16 @@ export const navItems: NavItem[] = [
     enabled: true,
   },
   {
+    labelKey: 'dashboard.nav.attendance',
+    path: paths.attendance,
+    icon: CalendarCheck,
+    enabled: true,
+  },
+  {
     labelKey: 'dashboard.nav.parties',
     path: paths.parties,
     icon: ContactRound,
     enabled: true,
-  },
-  {
-    labelKey: 'dashboard.nav.transactions',
-    path: paths.transactions,
-    icon: ArrowLeftRight,
-    enabled: false,
   },
   {
     labelKey: 'dashboard.nav.organization',

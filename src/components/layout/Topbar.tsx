@@ -15,16 +15,18 @@ export function Topbar({ onMenuClick, title }: TopbarProps) {
   const { t } = useTranslation(['dashboard', 'common'])
 
   return (
-    <header className="sticky top-0 z-30 flex min-h-16 items-center gap-3 border-b border-line bg-card px-4 pt-[env(safe-area-inset-top)] sm:px-6">
+    <header className="sticky top-0 z-30 flex min-h-16 items-center gap-2 border-b border-line bg-card px-4 pt-[env(safe-area-inset-top)] sm:gap-3 sm:px-6">
       <IconButton
         label={translate(t, 'dashboard.openMenu')}
         variant="outlined"
-        className="lg:hidden"
+        className="shrink-0 lg:hidden"
         onClick={onMenuClick}
       >
         <Menu aria-hidden="true" className="size-5" />
       </IconButton>
-      <h1 className="min-w-0 flex-1 font-heading text-lg font-bold text-charcoal">{title}</h1>
+      <h1 className="min-w-0 flex-1 truncate font-heading text-base font-bold text-charcoal sm:text-lg">
+        {title}
+      </h1>
       <LanguageSwitcher />
       <UserMenu />
     </header>

@@ -1,11 +1,21 @@
 import { useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import { ChevronLeft, Loader2, Pencil, Plus, Trash2, UserCheck, UserX } from 'lucide-react'
+import {
+  CalendarCheck,
+  ChevronLeft,
+  Loader2,
+  Pencil,
+  Plus,
+  Trash2,
+  UserCheck,
+  UserX,
+} from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
 import { Alert } from 'src/components/ui/Alert'
 import { BsDatePicker } from 'src/components/ui/BsDatePicker'
 import { Button } from 'src/components/ui/Button'
+import { buttonVariants } from 'src/components/ui/buttonVariants'
 import {
   Card,
   CardContent,
@@ -43,14 +53,14 @@ import { todayBsString } from 'src/lib/bsCalendar'
 import { cn } from 'src/lib/cn'
 import { formatMoney } from 'src/lib/format'
 import { translate } from 'src/lib/i18n'
-import { paths } from 'src/lib/paths'
+import { paths, attendanceDetail } from 'src/lib/paths'
 
 const PAGE_SIZE = 20
 
 export function EmployeeDetailPage() {
   const { employeeId } = useParams()
   const navigate = useNavigate()
-  const { t, i18n } = useTranslation(['employees', 'transactions', 'common', 'errors'])
+  const { t, i18n } = useTranslation(['employees', 'transactions', 'attendance', 'common', 'errors'])
   const language = i18n.resolvedLanguage === 'ne' ? 'ne' : 'en'
 
   const [editing, setEditing] = useState(false)
@@ -237,12 +247,14 @@ export function EmployeeDetailPage() {
         {t('employees:backToList')}
       </Link>
 
-      <div className="flex flex-wrap items-start justify-between gap-3">
+      <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
         <div className="flex min-w-0 items-center gap-3">
           <EmployeeAvatar name={brief.name} />
           <div className="min-w-0">
             <div className="flex flex-wrap items-center gap-2">
-              <h2 className="font-heading text-2xl font-bold text-charcoal">{brief.name}</h2>
+              <h2 className="min-w-0 font-heading text-xl font-bold text-charcoal [overflow-wrap:anywhere] sm:text-2xl">
+                {brief.name}
+              </h2>
               <StatusBadge active={brief.is_active} />
             </div>
             <p className="mt-1 truncate text-sm text-charcoal-500">
@@ -250,9 +262,16 @@ export function EmployeeDetailPage() {
             </p>
           </div>
         </div>
-        <div className="flex flex-wrap gap-2">
+        <div className="grid w-full grid-cols-2 gap-2 lg:flex lg:w-auto lg:flex-wrap">
+          <Link
+            to={attendanceDetail(brief.id)}
+            className={cn(buttonVariants({ variant: 'secondary' }), 'truncate')}
+          >
+            <CalendarCheck aria-hidden="true" className="size-4 shrink-0" />
+            <span className="truncate">{t('attendance:openAttendance')}</span>
+          </Link>
           <Button variant="secondary" onClick={() => setEditing(true)}>
-            <Pencil aria-hidden="true" className="size-4" />
+            <Pencil aria-hidden="true" className="size-4 shrink-0" />
             {t('common:edit')}
           </Button>
           <Button
@@ -261,11 +280,13 @@ export function EmployeeDetailPage() {
             onClick={() => update.mutate({ is_active: !brief.is_active })}
           >
             {brief.is_active ? (
-              <UserX aria-hidden="true" className="size-4" />
+              <UserX aria-hidden="true" className="size-4 shrink-0" />
             ) : (
-              <UserCheck aria-hidden="true" className="size-4" />
+              <UserCheck aria-hidden="true" className="size-4 shrink-0" />
             )}
-            {brief.is_active ? t('employees:markInactive') : t('employees:markActive')}
+            <span className="truncate">
+              {brief.is_active ? t('employees:markInactive') : t('employees:markActive')}
+            </span>
           </Button>
           <Button variant="destructive" onClick={() => setConfirmOpen(true)}>
             {t('common:delete')}
@@ -274,12 +295,12 @@ export function EmployeeDetailPage() {
       </div>
 
       <Card className="min-w-0">
-        <div className="flex flex-wrap items-start justify-between gap-3 p-5">
-          <div>
+        <div className="flex flex-col gap-3 p-5 sm:flex-row sm:items-start sm:justify-between">
+          <div className="min-w-0">
             <CardTitle>{t('transactions:sectionTitle')}</CardTitle>
             <CardDescription>{t('transactions:sectionSubtitle')}</CardDescription>
           </div>
-          <Button onClick={openCreateTransaction}>
+          <Button onClick={openCreateTransaction} className="w-full sm:w-auto">
             <Plus aria-hidden="true" className="size-4" />
             {t('transactions:add')}
           </Button>
@@ -357,7 +378,7 @@ export function EmployeeDetailPage() {
                   </Select>
                 )}
               </FormField>
-              <div className="flex items-end gap-2">
+              <div className="grid grid-cols-2 gap-2 sm:flex sm:items-end">
                 <Button size="sm" onClick={applyRange}>
                   {t('transactions:filters.apply')}
                 </Button>
@@ -390,11 +411,34 @@ export function EmployeeDetailPage() {
           ) : (
             <div
               className={cn(
-                'overflow-x-auto transition-opacity',
+                'transition-opacity',
                 transactionsFetching ? 'opacity-60' : '',
               )}
             >
-              <table className="w-full border-collapse text-left">
+              <ul className="divide-y divide-line md:hidden">
+                {rows.length === 0 ? (
+                  <li className="px-3 py-8 text-center text-sm text-charcoal-500">
+                    {hasRange || kind
+                      ? t('transactions:empty')
+                      : t('transactions:emptyAll')}
+                  </li>
+                ) : (
+                  rows.map((transaction) => (
+                    <TransactionMobileRow
+                      key={transaction.id}
+                      transaction={transaction}
+                      language={language}
+                      onEdit={() => openEditTransaction(transaction)}
+                      onDelete={() => {
+                        setTxDeleteError(undefined)
+                        setTxDeleting(transaction)
+                      }}
+                    />
+                  ))
+                )}
+              </ul>
+              <div className="hidden overflow-x-auto md:block">
+                <table className="w-full border-collapse text-left md:min-w-[36rem]">
                 <thead>
                   <tr className="border-b border-line font-ui text-[11px] uppercase tracking-wide text-charcoal-400">
                     <th scope="col" className="px-3 py-2 font-semibold">
@@ -450,27 +494,30 @@ export function EmployeeDetailPage() {
                     ))
                   )}
                 </tbody>
-              </table>
+                </table>
+              </div>
             </div>
           )}
 
           {totalPages > 1 ? (
-            <div className="flex items-center justify-between gap-3">
+            <div className="flex flex-wrap items-center justify-between gap-2 sm:gap-3">
               <Button
                 variant="secondary"
                 size="sm"
                 disabled={page <= 1}
+                className="flex-1 sm:flex-none"
                 onClick={() => setPage((value) => Math.max(1, value - 1))}
               >
                 {t('transactions:previous')}
               </Button>
-              <span className="font-ui text-sm text-charcoal-500">
+              <span className="order-first w-full text-center font-ui text-sm text-charcoal-500 sm:order-none sm:w-auto">
                 {t('transactions:pageOf', { page, total: totalPages })}
               </span>
               <Button
                 variant="secondary"
                 size="sm"
                 disabled={page >= totalPages}
+                className="flex-1 sm:flex-none"
                 onClick={() => setPage((value) => Math.min(totalPages, value + 1))}
               >
                 {t('transactions:next')}
@@ -598,6 +645,67 @@ export function EmployeeDetailPage() {
   )
 }
 
+function TransactionMobileRow({
+  transaction,
+  language,
+  onEdit,
+  onDelete,
+}: {
+  transaction: Transaction
+  language: 'en' | 'ne'
+  onEdit: () => void
+  onDelete: () => void
+}) {
+  const { t } = useTranslation(['employees', 'transactions', 'common'])
+  const payment = transaction.payment_method
+    ? translate(t, `employees.paymentMethods.${transaction.payment_method}`)
+    : '—'
+
+  return (
+    <li className="p-4">
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0">
+          <p className="whitespace-nowrap font-ui text-sm text-charcoal">
+            {transaction.bs_date}
+          </p>
+          <p className="mt-0.5 font-ui text-sm font-semibold text-charcoal">
+            {translate(t, `employees.kinds.${transaction.kind}`)}
+          </p>
+        </div>
+        <span className="shrink-0 text-right font-ui text-sm font-semibold text-charcoal [overflow-wrap:anywhere]">
+          {formatMoney(transaction.amount, language)}
+        </span>
+      </div>
+      <div className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 font-ui text-xs text-charcoal-500">
+        <span>{payment}</span>
+        {transaction.note ? (
+          <span className="min-w-0 line-clamp-2 [overflow-wrap:anywhere]">
+            {transaction.note}
+          </span>
+        ) : null}
+      </div>
+      <div className="mt-3 flex justify-end gap-1">
+        <IconButton
+          label={t('common:edit')}
+          variant="outlined"
+          size="sm"
+          onClick={onEdit}
+        >
+          <Pencil aria-hidden="true" className="size-4" />
+        </IconButton>
+        <IconButton
+          label={t('common:delete')}
+          variant="destructive"
+          size="sm"
+          onClick={onDelete}
+        >
+          <Trash2 aria-hidden="true" className="size-4" />
+        </IconButton>
+      </div>
+    </li>
+  )
+}
+
 function TransactionRow({
   transaction,
   language,
@@ -679,7 +787,9 @@ function Stat({
       {loading ? (
         <Skeleton className="mt-1.5 h-5 w-24" />
       ) : (
-        <span className="mt-1 block font-heading text-lg font-bold text-charcoal">{value}</span>
+        <span className="mt-1 block font-heading text-lg font-bold text-charcoal tabular-nums [overflow-wrap:anywhere]">
+          {value}
+        </span>
       )}
     </div>
   )

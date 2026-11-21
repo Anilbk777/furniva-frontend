@@ -48,5 +48,18 @@
   "partyTypeNotFound": "Party type not found",
   "partyTypeExists": "This party type already exists",
   "partyTypeInUse": "Parties still use this type. Move or remove them first",
-  "partyExists": "A party with this name already exists"
+  "partyExists": "A party with this name already exists",
+  "attendanceBsDateInvalid": "Enter a valid Bikram Sambat date",
+  "attendanceBsDateFormat": "Enter a BS date like 2083-08-15",
+  "attendanceTimeInvalid": "Enter a valid time like 09:30 AM",
+  "attendanceOvertimeInvalid": "Overtime must be between 0 and 24 hours",
+  "attendanceNoteLength": "Note must be at most 500 characters",
+  "attendanceNoWorkFields": "Absent or leave cannot have times or overtime",
+  "attendanceCheckoutNeedsCheckin": "Add a check-in time before check-out",
+  "attendanceCheckoutBeforeCheckin": "Check-out must be after check-in",
+  "attendanceStatusInvalid": "Choose a valid attendance status",
+  "attendanceNotFound": "Attendance record not found",
+  "attendanceRangeInvalid": "The From date must not be after the To date",
+  "attendanceRangeTooLong": "Date range cannot be longer than 366 days",
+  "attendanceExists": "Attendance is already marked for this employee on this date"
 }

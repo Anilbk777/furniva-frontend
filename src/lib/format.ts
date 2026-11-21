@@ -13,6 +13,19 @@ export function formatDate(value: string | null, language: 'en' | 'ne'): string 
   }).format(date)
 }
 
+export function formatNumber(
+  value: number | string | null,
+  language: 'en' | 'ne',
+  maximumFractionDigits = 2,
+): string {
+  if (value === null || value === '') return '—'
+  const amount = typeof value === 'number' ? value : Number(value)
+  if (Number.isNaN(amount)) return '—'
+  return new Intl.NumberFormat(localeByLanguage[language], {
+    maximumFractionDigits,
+  }).format(amount)
+}
+
 export function formatMoney(value: number | string | null, language: 'en' | 'ne'): string {
   if (value === null || value === '') return '—'
   const amount = typeof value === 'number' ? value : Number(value)

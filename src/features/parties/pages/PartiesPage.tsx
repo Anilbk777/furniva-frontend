@@ -89,27 +89,27 @@ export function PartiesPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex flex-wrap items-start justify-between gap-3">
-        <div>
-          <h2 className="font-heading text-2xl font-bold text-charcoal">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+        <div className="min-w-0">
+          <h2 className="font-heading text-xl font-bold text-charcoal sm:text-2xl">
             {t('parties:title')}
           </h2>
           <p className="mt-1 text-sm text-charcoal-500">{t('parties:subtitle')}</p>
         </div>
-        <div className="flex flex-wrap gap-2">
+        <div className="grid w-full grid-cols-2 gap-2 sm:flex sm:w-auto sm:flex-wrap">
           <Button variant="secondary" onClick={() => setTypesOpen(true)}>
-            <Settings2 aria-hidden="true" className="size-4" />
-            {t('parties:manageTypes')}
+            <Settings2 aria-hidden="true" className="size-4 shrink-0" />
+            <span className="truncate">{t('parties:manageTypes')}</span>
           </Button>
           <Button onClick={() => setFormOpen(true)}>
-            <UserPlus aria-hidden="true" className="size-4" />
-            {t('parties:add')}
+            <UserPlus aria-hidden="true" className="size-4 shrink-0" />
+            <span className="truncate">{t('parties:add')}</span>
           </Button>
         </div>
       </div>
 
       <div
-        className="grid grid-cols-2 gap-3 md:grid-cols-3"
+        className="grid grid-cols-2 gap-3 sm:grid-cols-3"
         aria-busy={statsLoading || undefined}
       >
         <StatCard
@@ -144,6 +144,7 @@ export function PartiesPage() {
             setStatus('inactive')
             setPage(1)
           }}
+          className="col-span-2 sm:col-span-1"
         />
       </div>
 
@@ -165,7 +166,7 @@ export function PartiesPage() {
             />
           ) : null}
         </div>
-        <div className="flex flex-wrap items-center gap-3">
+        <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:items-center sm:gap-3">
           <Select
             aria-label={t('parties:filterByType')}
             value={typeId}
@@ -173,7 +174,7 @@ export function PartiesPage() {
               setTypeId(event.target.value)
               setPage(1)
             }}
-            className="min-h-11 w-44"
+            className="min-h-11 w-full sm:w-44"
           >
             <option value="">{t('parties:allTypes')}</option>
             {types.data?.map((type) => (
@@ -185,7 +186,7 @@ export function PartiesPage() {
           <div
             role="group"
             aria-label={t('parties:filterLabel')}
-            className="inline-flex rounded-sm border border-line bg-card-alt p-0.5"
+            className="grid w-full grid-cols-3 rounded-sm border border-line bg-card-alt p-0.5 sm:inline-flex sm:w-auto"
           >
             {(['all', 'active', 'inactive'] as const).map((value) => (
               <button
@@ -197,7 +198,7 @@ export function PartiesPage() {
                   setPage(1)
                 }}
                 className={cn(
-                  'min-h-11 rounded-[3px] px-3 font-ui text-xs font-semibold transition-colors',
+                  'min-h-11 whitespace-nowrap rounded-[3px] px-2 font-ui text-xs font-semibold transition-colors sm:px-3',
                   status === value
                     ? 'bg-primary text-white'
                     : 'text-charcoal hover:bg-charcoal-100',
@@ -259,8 +260,13 @@ export function PartiesPage() {
             parties.isFetching ? 'opacity-60' : '',
           )}
         >
-          <div className="overflow-x-auto">
-            <table className="w-full min-w-150 border-collapse text-left">
+          <ul className="divide-y divide-line md:hidden">
+            {rows.map((party) => (
+              <PartyMobileRow key={party.id} party={party} />
+            ))}
+          </ul>
+          <div className="hidden overflow-x-auto md:block">
+            <table className="w-full border-collapse text-left md:min-w-150">
               <thead className="bg-canvas-alt">
                 <tr className="font-ui text-[11px] uppercase tracking-wide text-charcoal-400">
                   <th scope="col" className="px-5 py-3 font-semibold">
@@ -289,22 +295,24 @@ export function PartiesPage() {
       ) : null}
 
       {result && totalPages > 1 ? (
-        <div className="flex items-center justify-between gap-3">
+        <div className="flex flex-wrap items-center justify-between gap-2 sm:gap-3">
           <Button
             variant="secondary"
             size="sm"
             disabled={page <= 1}
+            className="flex-1 sm:flex-none"
             onClick={() => setPage((value) => Math.max(1, value - 1))}
           >
             {t('parties:previous')}
           </Button>
-          <span className="font-ui text-sm text-charcoal-500">
+          <span className="order-first w-full text-center font-ui text-sm text-charcoal-500 sm:order-none sm:w-auto">
             {t('parties:pageOf', { page, total: totalPages })}
           </span>
           <Button
             variant="secondary"
             size="sm"
             disabled={page >= totalPages}
+            className="flex-1 sm:flex-none"
             onClick={() => setPage((value) => Math.min(totalPages, value + 1))}
           >
             {t('parties:next')}
@@ -347,6 +355,46 @@ export function PartiesPage() {
         </ModalContent>
       </Modal>
     </div>
+  )
+}
+
+function PartyMobileRow({ party }: { party: Party }) {
+  const { t } = useTranslation('parties')
+
+  return (
+    <li>
+      <Link
+        to={partyDetail(party.id)}
+        className="flex items-start gap-3 p-4 transition-colors hover:bg-card-alt focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+      >
+        <PartyAvatar name={party.name} />
+        <div className="min-w-0 flex-1">
+          <div className="flex items-start justify-between gap-2">
+            <div className="min-w-0">
+              <p className="truncate font-ui text-sm font-semibold text-charcoal">
+                {party.name}
+              </p>
+              <p className="mt-0.5 truncate font-ui text-xs text-charcoal-400">
+                {party.phone || t('noPhone')}
+              </p>
+            </div>
+            <StatusBadge active={party.is_active} />
+          </div>
+          <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 font-ui text-xs text-charcoal-500">
+            <span className="rounded-pill bg-canvas-alt px-2 py-0.5 text-[10px] font-semibold text-charcoal-500">
+              {party.party_type.name}
+            </span>
+            {party.address ? (
+              <span className="min-w-0 [overflow-wrap:anywhere]">{party.address}</span>
+            ) : null}
+          </div>
+        </div>
+        <ChevronRight
+          aria-hidden="true"
+          className="mt-2 size-4 shrink-0 text-charcoal-400"
+        />
+      </Link>
+    </li>
   )
 }
 

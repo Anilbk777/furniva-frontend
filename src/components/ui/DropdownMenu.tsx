@@ -1,10 +1,12 @@
 import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu'
 import type { ComponentPropsWithoutRef } from 'react'
+import { Check } from 'lucide-react'
 
 import { cn } from 'src/lib/cn'
 
 export const DropdownMenu = DropdownMenuPrimitive.Root
 export const DropdownMenuTrigger = DropdownMenuPrimitive.Trigger
+export const DropdownMenuRadioGroup = DropdownMenuPrimitive.RadioGroup
 
 export function DropdownMenuContent({
   className,
@@ -37,6 +39,27 @@ export function DropdownMenuItem({
       )}
       {...props}
     />
+  )
+}
+
+export function DropdownMenuRadioItem({
+  className,
+  children,
+  ...props
+}: ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.RadioItem>) {
+  return (
+    <DropdownMenuPrimitive.RadioItem
+      className={cn(
+        'relative flex min-h-11 cursor-pointer select-none items-center rounded-sm px-3 pr-9 font-ui text-sm text-charcoal outline-none data-[highlighted]:bg-charcoal-50',
+        className,
+      )}
+      {...props}
+    >
+      {children}
+      <DropdownMenuPrimitive.ItemIndicator className="absolute right-3 inline-flex">
+        <Check aria-hidden="true" className="size-4 text-primary" />
+      </DropdownMenuPrimitive.ItemIndicator>
+    </DropdownMenuPrimitive.RadioItem>
   )
 }
 

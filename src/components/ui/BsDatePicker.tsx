@@ -55,16 +55,26 @@ export function BsDatePicker({
   const today = todayBs()
 
   const [open, setOpen] = useState(false)
-  const [view, setView] = useState<{ year: number; month: number }>(() => {
+  const [viewState, setViewState] = useState<{
+    source: string
+    year: number
+    month: number
+  }>(() => {
     const base = selected ?? today
-    return { year: base.year, month: base.month }
+    return { source: value, year: base.year, month: base.month }
   })
   const rootRef = useRef<HTMLDivElement>(null)
 
-  useEffect(() => {
-    const next = parseBsDate(value)
-    if (next) setView({ year: next.year, month: next.month })
-  }, [value])
+  const view =
+    viewState.source === value
+      ? viewState
+      : selected
+        ? { year: selected.year, month: selected.month }
+        : viewState
+
+  function setView(next: { year: number; month: number }) {
+    setViewState({ source: value, year: next.year, month: next.month })
+  }
 
   useEffect(() => {
     if (!open) return
@@ -96,7 +106,7 @@ export function BsDatePicker({
   }
 
   function moveMonth(delta: number) {
-    setView((current) => shiftBsMonth(current.year, current.month, delta))
+    setView(shiftBsMonth(view.year, view.month, delta))
   }
 
   function selectDay(day: number) {

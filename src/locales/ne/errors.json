@@ -48,5 +48,18 @@
   "partyTypeNotFound": "पक्ष प्रकार भेटिएन",
   "partyTypeExists": "यो पक्ष प्रकार पहिले नै छ",
   "partyTypeInUse": "यो प्रकार अझै पक्षहरूले प्रयोग गर्छन्। पहिले सार्नुहोस् वा हटाउनुहोस्",
-  "partyExists": "यो नामको पक्ष पहिले नै छ"
+  "partyExists": "यो नामको पक्ष पहिले नै छ",
+  "attendanceBsDateInvalid": "मान्य विक्रम सम्वत् मिति राख्नुहोस्",
+  "attendanceBsDateFormat": "वि.सं. मिति 2083-08-15 जस्तै राख्नुहोस्",
+  "attendanceTimeInvalid": "०९:३० AM जस्तै मान्य समय राख्नुहोस्",
+  "attendanceOvertimeInvalid": "ओभरटाइम ० देखि २४ घण्टाभित्र हुनुपर्छ",
+  "attendanceNoteLength": "टिप्पणी बढीमा ५०० अक्षरको हुनुपर्छ",
+  "attendanceNoWorkFields": "अनुपस्थित वा बिदामा समय वा ओभरटाइम राख्न मिल्दैन",
+  "attendanceCheckoutNeedsCheckin": "गएको समय राख्नुअघि आएको समय राख्नुहोस्",
+  "attendanceCheckoutBeforeCheckin": "गएको समय आएको समयपछि हुनुपर्छ",
+  "attendanceStatusInvalid": "मान्य हाजिरी स्थिति छान्नुहोस्",
+  "attendanceNotFound": "हाजिरी रेकर्ड भेटिएन",
+  "attendanceRangeInvalid": "‘देखि’ मिति ‘सम्म’ भन्दा पछि हुनुहुँदैन",
+  "attendanceRangeTooLong": "मिति दायरा ३६६ दिनभन्दा लामो हुन सक्दैन",
+  "attendanceExists": "यो कर्मचारीको यो मितिको हाजिरी पहिले नै राखिएको छ"
 }

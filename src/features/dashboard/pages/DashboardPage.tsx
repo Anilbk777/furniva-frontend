@@ -90,21 +90,23 @@ export function DashboardPage() {
           </CardContent>
         </Card>
 
-        <Card className="sm:col-span-2">
-          <CardHeader>
-            <CardTitle>{t('common:comingSoon')}</CardTitle>
-          </CardHeader>
-          <CardContent className="flex flex-wrap gap-2">
-            {disabledItems.map((item) => (
-              <span
-                key={item.path}
-                className="rounded-pill bg-canvas-alt px-3 py-1 font-ui text-sm text-charcoal-500"
-              >
-                {translate(t, item.labelKey)}
-              </span>
-            ))}
-          </CardContent>
-        </Card>
+        {disabledItems.length > 0 ? (
+          <Card className="sm:col-span-2">
+            <CardHeader>
+              <CardTitle>{t('common:comingSoon')}</CardTitle>
+            </CardHeader>
+            <CardContent className="flex flex-wrap gap-2">
+              {disabledItems.map((item) => (
+                <span
+                  key={item.path}
+                  className="rounded-pill bg-canvas-alt px-3 py-1 font-ui text-sm text-charcoal-500"
+                >
+                  {translate(t, item.labelKey)}
+                </span>
+              ))}
+            </CardContent>
+          </Card>
+        ) : null}
       </div>
     </div>
   )

@@ -9,8 +9,8 @@ export const paths = {
   organizationSetup: '/create-organization',
   dashboard: '/dashboard',
   employees: '/employees',
+  attendance: '/attendance',
   parties: '/parties',
-  transactions: '/transactions',
   organization: '/organization',
 } as const
 
@@ -20,6 +20,10 @@ export function loginWithNext(next: string): string {
 
 export function employeeDetail(id: string): string {
   return `${paths.employees}/${id}`
+}
+
+export function attendanceDetail(employeeId: string): string {
+  return `${paths.attendance}/${employeeId}`
 }
 
 export function partyDetail(id: string): string {

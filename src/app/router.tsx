@@ -12,6 +12,10 @@ import {
   ResetPasswordPage,
   VerifyEmailPage,
 } from 'src/features/auth'
+import {
+  AttendancePage,
+  EmployeeAttendancePage,
+} from 'src/features/attendance'
 import { DashboardPage } from 'src/features/dashboard'
 import { EmployeeDetailPage, EmployeesPage } from 'src/features/employees'
 import { PartiesPage, PartyDetailPage } from 'src/features/parties'
@@ -61,6 +65,11 @@ export const router = createBrowserRouter([
                         path: `${paths.employees}/:employeeId`,
                         element: <EmployeeDetailPage />,
                       },
+                      { path: paths.attendance, element: <AttendancePage /> },
+                      {
+                        path: `${paths.attendance}/:employeeId`,
+                        element: <EmployeeAttendancePage />,
+                      },
                       { path: paths.parties, element: <PartiesPage /> },
                       {
                         path: `${paths.parties}/:partyId`,
@@ -68,10 +77,6 @@ export const router = createBrowserRouter([
                       },
                       { path: paths.organization, element: <OrganizationPage /> },
                     ],
-                  },
-                  {
-                    path: paths.transactions,
-                    element: <Navigate to={paths.dashboard} replace />,
                   },
                 ],
               },

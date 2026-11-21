@@ -37,10 +37,6 @@
     "actions": "Actions"
   },
   "totals": {
-    "creditSale": "Credit sale",
-    "received": "Received",
-    "creditPurchase": "Credit purchase",
-    "paid": "Paid",
     "count_one": "{{count}} transaction",
     "count_other": "{{count}} transactions"
   },

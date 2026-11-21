@@ -47,6 +47,28 @@ const messageKeys: Record<string, string> = {
   'This party type already exists': 'errors.partyTypeExists',
   'Parties still use this type. Move or remove them first': 'errors.partyTypeInUse',
   'Phone number must contain only digits': 'errors.phoneInvalid',
+  'From date must not be after to date': 'errors.attendanceRangeInvalid',
+  "Date range can't be longer than 366 days": 'errors.attendanceRangeTooLong',
+  'Attendance record not found': 'errors.attendanceNotFound',
+  'Attendance for this employee on this date already exists': 'errors.attendanceExists',
+  "Absent and leave days can't have check-in, check-out or overtime":
+    'errors.attendanceNoWorkFields',
+  'Check-out needs a check-in time': 'errors.attendanceCheckoutNeedsCheckin',
+  'Check-out must be after check-in': 'errors.attendanceCheckoutBeforeCheckin',
+  'BS date must look like 2081-04-15 (YYYY-MM-DD)': 'errors.attendanceBsDateFormat',
+  'This is not a valid BS date': 'errors.attendanceBsDateInvalid',
+  'Time must be in 12-hour format like 09:30 AM': 'errors.attendanceTimeInvalid',
+}
+
+function messageKeyFor(message: string): string | undefined {
+  if (messageKeys[message]) return messageKeys[message]
+  if (message.startsWith('Attendance for ') && message.endsWith(' already exists')) {
+    return 'errors.attendanceExists'
+  }
+  if (message.startsWith('Status must be one of')) {
+    return 'errors.attendanceStatusInvalid'
+  }
+  return undefined
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -88,7 +110,7 @@ export function mapApiError(error: unknown): MappedError {
 
   const message = payload?.message ?? ''
   const messageKey =
-    (code ? codeKeys[code] : undefined) ?? messageKeys[message] ?? 'errors.generic'
+    (code ? codeKeys[code] : undefined) ?? messageKeyFor(message) ?? 'errors.generic'
 
   return { status, code, messageKey, field, fields }
 }

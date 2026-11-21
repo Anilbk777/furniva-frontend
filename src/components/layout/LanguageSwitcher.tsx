@@ -1,6 +1,13 @@
+import { ChevronDown, Globe } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
-import { cn } from 'src/lib/cn'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuTrigger,
+} from 'src/components/ui/DropdownMenu'
 import { syncDocumentLanguage, supportedLanguages } from 'src/lib/i18n'
 import { storage } from 'src/lib/storage'
 
@@ -9,6 +16,7 @@ export function LanguageSwitcher() {
   const current = i18n.resolvedLanguage === 'ne' ? 'ne' : 'en'
 
   function select(language: 'en' | 'ne'): void {
+    if (language === current) return
     void i18n.changeLanguage(language).then(() => {
       storage.setLang(language)
       syncDocumentLanguage()
@@ -16,25 +24,33 @@ export function LanguageSwitcher() {
   }
 
   return (
-    <div
-      role="group"
-      aria-label={t('language')}
-      className="inline-flex rounded-sm border border-line bg-card-alt p-0.5"
-    >
-      {supportedLanguages.map((language) => (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
         <button
-          key={language}
           type="button"
-          aria-pressed={current === language}
-          onClick={() => select(language)}
-          className={cn(
-            'min-h-11 rounded-[3px] px-3 font-ui text-xs font-semibold transition-colors',
-            current === language ? 'bg-primary text-white' : 'text-charcoal hover:bg-charcoal-100',
-          )}
+          aria-label={t('language')}
+          className="inline-flex min-h-11 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-sm border border-line bg-card-alt px-2.5 font-ui text-xs font-semibold text-charcoal transition-colors hover:bg-charcoal-100 sm:px-3"
         >
-          {language === 'en' ? t('english') : t('nepali')}
+          <Globe aria-hidden="true" className="size-4 text-charcoal-500" />
+          <span className="sm:hidden">{current === 'en' ? 'EN' : 'ने'}</span>
+          <span className="hidden sm:inline">
+            {current === 'en' ? t('english') : t('nepali')}
+          </span>
+          <ChevronDown aria-hidden="true" className="size-3.5 text-charcoal-400" />
         </button>
-      ))}
-    </div>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" className="min-w-44">
+        <DropdownMenuRadioGroup
+          value={current}
+          onValueChange={(value) => select(value as 'en' | 'ne')}
+        >
+          {supportedLanguages.map((language) => (
+            <DropdownMenuRadioItem key={language} value={language}>
+              {language === 'en' ? t('english') : t('nepali')}
+            </DropdownMenuRadioItem>
+          ))}
+        </DropdownMenuRadioGroup>
+      </DropdownMenuContent>
+    </DropdownMenu>
   )
 }

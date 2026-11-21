@@ -4,6 +4,7 @@ import { initReactI18next } from 'react-i18next'
 
 import enCommon from 'src/locales/en/common.json'
 import enAuth from 'src/locales/en/auth.json'
+import enAttendance from 'src/locales/en/attendance.json'
 import enDashboard from 'src/locales/en/dashboard.json'
 import enEmployees from 'src/locales/en/employees.json'
 import enErrors from 'src/locales/en/errors.json'
@@ -13,6 +14,7 @@ import enPartyTransactions from 'src/locales/en/partyTransactions.json'
 import enTransactions from 'src/locales/en/transactions.json'
 import neCommon from 'src/locales/ne/common.json'
 import neAuth from 'src/locales/ne/auth.json'
+import neAttendance from 'src/locales/ne/attendance.json'
 import neDashboard from 'src/locales/ne/dashboard.json'
 import neEmployees from 'src/locales/ne/employees.json'
 import neErrors from 'src/locales/ne/errors.json'
@@ -25,6 +27,7 @@ export const resources = {
   en: {
     common: enCommon,
     auth: enAuth,
+    attendance: enAttendance,
     dashboard: enDashboard,
     employees: enEmployees,
     errors: enErrors,
@@ -36,6 +39,7 @@ export const resources = {
   ne: {
     common: neCommon,
     auth: neAuth,
+    attendance: neAttendance,
     dashboard: neDashboard,
     employees: neEmployees,
     errors: neErrors,
@@ -73,6 +77,7 @@ void i18n.use(detector).use(initReactI18next).init({
   ns: [
     'common',
     'auth',
+    'attendance',
     'dashboard',
     'employees',
     'errors',

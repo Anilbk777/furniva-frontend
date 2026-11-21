@@ -22,6 +22,7 @@
   "nav": {
     "dashboard": "Dashboard",
     "employees": "Employees",
+    "attendance": "Attendance",
     "parties": "Parties",
     "transactions": "Transactions",
     "organization": "Organization"

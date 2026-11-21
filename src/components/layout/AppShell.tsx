@@ -53,7 +53,7 @@ export function AppShell() {
       <Sheet open={drawerOpen} onOpenChange={setDrawerOpen}>
         <div className="flex min-w-0 flex-1 flex-col">
           <Topbar onMenuClick={() => setDrawerOpen(true)} title={title} />
-          <main className="flex-1 px-4 py-6 pb-[calc(env(safe-area-inset-bottom)+1.5rem)] sm:px-6 lg:px-8">
+          <main className="min-w-0 flex-1 px-4 py-6 pb-[calc(env(safe-area-inset-bottom)+1.5rem)] sm:px-6 lg:px-8">
             <Outlet />
           </main>
         </div>

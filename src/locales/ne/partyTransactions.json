@@ -37,10 +37,6 @@
     "actions": "कार्यहरू"
   },
   "totals": {
-    "creditSale": "उधारो बिक्री",
-    "received": "प्राप्त",
-    "creditPurchase": "उधारो खरिद",
-    "paid": "भुक्तानी",
     "count_one": "{{count}} कारोबार",
     "count_other": "{{count}} कारोबार"
   },

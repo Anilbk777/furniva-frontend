@@ -33,7 +33,7 @@ export function UserMenu() {
           <button
             type="button"
             aria-label={translate(t, 'dashboard.userMenu')}
-            className="flex min-h-11 items-center gap-2 rounded-sm px-2 hover:bg-charcoal-100"
+            className="flex min-h-11 shrink-0 items-center gap-2 rounded-sm px-2 hover:bg-charcoal-100"
           >
             <span className="grid size-8 place-items-center rounded-pill bg-primary font-ui text-sm font-bold text-white">
               {me?.name?.charAt(0)?.toUpperCase() ?? '?'}

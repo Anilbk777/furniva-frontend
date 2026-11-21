@@ -246,12 +246,12 @@ export function PartyDetailPage() {
         {t('parties:backToList')}
       </Link>
 
-      <div className="flex flex-wrap items-start justify-between gap-3">
+      <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
         <div className="flex min-w-0 items-center gap-3">
           <PartyAvatar name={record.name} size="md" />
           <div className="min-w-0">
             <div className="flex flex-wrap items-center gap-2">
-              <h2 className="font-heading text-2xl font-bold text-charcoal">
+              <h2 className="min-w-0 font-heading text-xl font-bold text-charcoal [overflow-wrap:anywhere] sm:text-2xl">
                 {record.name}
               </h2>
               <StatusBadge active={record.is_active} />
@@ -262,9 +262,9 @@ export function PartyDetailPage() {
             </p>
           </div>
         </div>
-        <div className="flex flex-wrap gap-2">
+        <div className="grid w-full grid-cols-2 gap-2 lg:flex lg:w-auto lg:flex-wrap">
           <Button variant="secondary" onClick={() => setEditing(true)}>
-            <Pencil aria-hidden="true" className="size-4" />
+            <Pencil aria-hidden="true" className="size-4 shrink-0" />
             {t('common:edit')}
           </Button>
           <Button
@@ -273,11 +273,13 @@ export function PartyDetailPage() {
             onClick={() => update.mutate({ is_active: !record.is_active })}
           >
             {record.is_active ? (
-              <UserX aria-hidden="true" className="size-4" />
+              <UserX aria-hidden="true" className="size-4 shrink-0" />
             ) : (
-              <UserCheck aria-hidden="true" className="size-4" />
+              <UserCheck aria-hidden="true" className="size-4 shrink-0" />
             )}
-            {record.is_active ? t('parties:markInactive') : t('parties:markActive')}
+            <span className="truncate">
+              {record.is_active ? t('parties:markInactive') : t('parties:markActive')}
+            </span>
           </Button>
           <Button variant="destructive" onClick={() => setConfirmOpen(true)}>
             {t('common:delete')}
@@ -288,38 +290,26 @@ export function PartyDetailPage() {
       
 
       <Card className="min-w-0">
-        <div className="flex flex-wrap items-start justify-between gap-3 p-5">
-          <div>
+        <div className="flex flex-col gap-3 p-5 sm:flex-row sm:items-start sm:justify-between">
+          <div className="min-w-0">
             <CardTitle>{t('partyTransactions:sectionTitle')}</CardTitle>
             <CardDescription>{t('partyTransactions:sectionSubtitle')}</CardDescription>
           </div>
-          <Button onClick={openCreateTransaction}>
+          <Button onClick={openCreateTransaction} className="w-full sm:w-auto">
             <Plus aria-hidden="true" className="size-4" />
             {t('partyTransactions:add')}
           </Button>
         </div>
         <CardContent className="flex flex-col gap-5">
           <div className="grid gap-3 text-sm sm:grid-cols-2 xl:grid-cols-4">
-            <Stat
-              label={t('partyTransactions:totals.creditSale')}
-              value={formatMoney(Number(amounts.credit_sale ?? 0), language)}
-              loading={transactionsLoading}
-            />
-            <Stat
-              label={t('partyTransactions:totals.received')}
-              value={formatMoney(Number(amounts.payment_received ?? 0), language)}
-              loading={transactionsLoading}
-            />
-            <Stat
-              label={t('partyTransactions:totals.creditPurchase')}
-              value={formatMoney(Number(amounts.credit_purchase ?? 0), language)}
-              loading={transactionsLoading}
-            />
-            <Stat
-              label={t('partyTransactions:totals.paid')}
-              value={formatMoney(Number(amounts.payment_made ?? 0), language)}
-              loading={transactionsLoading}
-            />
+            {partyTxKinds.map((value) => (
+              <Stat
+                key={value}
+                label={translate(t, `parties.kinds.${value}`)}
+                value={formatMoney(Number(amounts[value] ?? 0), language)}
+                loading={transactionsLoading}
+              />
+            ))}
           </div>
 
           <div className="rounded-sm bg-canvas-alt p-3">
@@ -376,7 +366,7 @@ export function PartyDetailPage() {
                   </Select>
                 )}
               </FormField>
-              <div className="flex items-end gap-2">
+              <div className="grid grid-cols-2 gap-2 sm:flex sm:items-end">
                 <Button size="sm" onClick={applyRange}>
                   {t('partyTransactions:filters.apply')}
                 </Button>
