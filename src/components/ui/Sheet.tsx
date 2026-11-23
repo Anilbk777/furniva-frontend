@@ -11,18 +11,21 @@ export const SheetClose = DialogPrimitive.Close
 
 export interface SheetContentProps
   extends Omit<ComponentPropsWithoutRef<typeof DialogPrimitive.Content>, 'title'> {
-  title: string
+  title: ReactNode
+  titleText?: string
   closeLabel: string
   children: ReactNode
 }
 
 export function SheetContent({
   title,
+  titleText,
   closeLabel,
   className,
   children,
   ...props
 }: SheetContentProps) {
+  const description = titleText ?? (typeof title === 'string' ? title : '')
   return (
     <DialogPrimitive.Portal>
       <DialogPrimitive.Overlay className="fixed inset-0 z-40 bg-charcoal-950/50" />
@@ -43,7 +46,7 @@ export function SheetContent({
             </IconButton>
           </DialogPrimitive.Close>
         </div>
-        <DialogPrimitive.Description className="sr-only">{title}</DialogPrimitive.Description>
+        <DialogPrimitive.Description className="sr-only">{description}</DialogPrimitive.Description>
         {children}
       </DialogPrimitive.Content>
     </DialogPrimitive.Portal>

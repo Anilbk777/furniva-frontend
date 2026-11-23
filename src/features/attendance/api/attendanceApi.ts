@@ -7,6 +7,7 @@ import type {
   AttendanceRecord,
   AttendanceUpdateInput,
   EmployeeAttendanceDetails,
+  TodayAttendanceResult,
 } from 'src/features/attendance/types'
 
 export function listAttendance(
@@ -22,6 +23,17 @@ export function listAttendance(
         page: filters.page,
         limit: filters.limit,
       },
+    })
+    .then((response) => response.data)
+}
+
+export function getTodayAttendance(
+  page: number,
+  limit: number,
+): Promise<ApiResponse<TodayAttendanceResult>> {
+  return http
+    .get<ApiResponse<TodayAttendanceResult>>('/attendance/today', {
+      params: { page, limit },
     })
     .then((response) => response.data)
 }

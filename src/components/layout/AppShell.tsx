@@ -58,7 +58,8 @@ export function AppShell() {
           </main>
         </div>
         <SheetContent
-          title={brand.name}
+          title={<BrandMark className="w-32" />}
+          titleText={brand.name}
           closeLabel={translate(t, 'common.close')}
         >
           <Sidebar onNavigate={() => setDrawerOpen(false)} className="px-1" />

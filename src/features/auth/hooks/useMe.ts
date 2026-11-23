@@ -8,5 +8,6 @@ export function useMe() {
     queryKey: authKeys.me,
     queryFn: async () => (await getMe()).data,
     retry: false,
+    staleTime: 5 * 60 * 1000,
   })
 }

@@ -27,7 +27,6 @@ import {
   AttendanceStatusBadge,
 } from 'src/features/attendance/components/AttendanceBits'
 import { AttendanceForm } from 'src/features/attendance/components/AttendanceForm'
-import { useActiveEmployees } from 'src/features/attendance/hooks/useActiveEmployees'
 import {
   useCreateAttendance,
   useDeleteAttendance,
@@ -59,6 +58,8 @@ const FILTERS: StatusFilter[] = [
   'unmarked',
 ]
 
+const PAGE_SIZE = 10
+
 interface RosterEmployee {
   id: string
   name: string
@@ -76,12 +77,11 @@ export function AttendancePage() {
   const { t, i18n } = useTranslation(['attendance', 'common', 'errors'])
   const language = i18n.resolvedLanguage === 'ne' ? 'ne' : 'en'
   const navigate = useNavigate()
-  const today = todayBsString()
-  const todayParts = parseBsDate(today)
 
   const [search, setSearch] = useState('')
   const [debouncedSearch, setDebouncedSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('all')
+  const [page, setPage] = useState(1)
   const [formOpen, setFormOpen] = useState(false)
   const [formEmployee, setFormEmployee] = useState<FormEmployee | null>(null)
   const [editing, setEditing] = useState<AttendanceRecord | null>(null)
@@ -89,11 +89,14 @@ export function AttendancePage() {
   const [deleting, setDeleting] = useState<AttendanceRecord | null>(null)
   const [deleteError, setDeleteError] = useState<string | undefined>()
 
-  const employeesQuery = useActiveEmployees()
-  const attendanceQuery = useTodayAttendance(today)
+  const todayQuery = useTodayAttendance(page, PAGE_SIZE)
   const create = useCreateAttendance()
   const update = useUpdateAttendance()
   const remove = useDeleteAttendance()
+
+  const data = todayQuery.data
+  const today = data?.bs_date ?? todayBsString()
+  const todayParts = parseBsDate(today)
 
   useEffect(() => {
     const timer = setTimeout(() => setDebouncedSearch(search.trim()), 300)
@@ -101,36 +104,30 @@ export function AttendancePage() {
   }, [search])
 
   const roster = useMemo<RosterRow[]>(() => {
-    const employees = employeesQuery.data ?? []
-    const records = attendanceQuery.data ?? []
-    const recordByEmployee = new Map(records.map((record) => [record.employee_id, record]))
-    const knownEmployees = new Set(employees.map((employee) => employee.id))
-
-    const rows: RosterRow[] = employees.map((employee) => ({
+    const employees = data?.employees ?? []
+    return employees.map((entry) => ({
       employee: {
-        id: employee.id,
-        name: employee.name,
-        role_title: employee.role_title,
+        id: entry.employee_id,
+        name: entry.name,
+        role_title: entry.role,
       },
-      record: recordByEmployee.get(employee.id) ?? null,
+      record: entry.attendance_id
+        ? {
+            id: entry.attendance_id,
+            employee_id: entry.employee_id,
+            employee_name: entry.name,
+            bs_date: entry.bs_date,
+            status: entry.status ?? '',
+            check_in: entry.check_in,
+            check_out: entry.check_out,
+            overtime_hours: entry.overtime_hours,
+            note: entry.note,
+            created_at: null,
+            updated_at: null,
+          }
+        : null,
     }))
-
-    for (const record of records) {
-      if (knownEmployees.has(record.employee_id)) continue
-      rows.push({
-        employee: {
-          id: record.employee_id,
-          name: record.employee_name,
-          role_title: null,
-        },
-        record,
-      })
-    }
-
-    return rows.sort((left, right) =>
-      left.employee.name.localeCompare(right.employee.name),
-    )
-  }, [employeesQuery.data, attendanceQuery.data])
+  }, [data])
 
   const counts = useMemo(() => {
     const next: Record<AttendanceStatus, number> = {
@@ -147,10 +144,9 @@ export function AttendancePage() {
   }, [roster])
 
   const unmarkedCount = roster.filter((row) => !row.record).length
-  const loading = employeesQuery.isLoading || attendanceQuery.isLoading
-  const fetching =
-    (employeesQuery.isFetching || attendanceQuery.isFetching) && !loading
-  const loadError = employeesQuery.isError || attendanceQuery.isError
+  const loading = todayQuery.isLoading
+  const fetching = todayQuery.isFetching && !todayQuery.isLoading
+  const loadError = todayQuery.isError
 
   const filteredRows = roster.filter((row) => {
     const matchesSearch = debouncedSearch
@@ -165,7 +161,10 @@ export function AttendancePage() {
     return matchesSearch && matchesStatus
   })
 
-  const filtered = Boolean(debouncedSearch) || statusFilter !== 'all'
+  // const filtered = Boolean(debouncedSearch) || statusFilter !== 'all'
+  // const totalEmployees = data?.pagination.total ?? 0
+  const totalPages = Math.max(1, data?.pagination.total_pages ?? 1)
+  const currentPage = Math.min(page, totalPages)
 
   const todayLabel = todayParts
     ? [
@@ -174,6 +173,11 @@ export function AttendancePage() {
         language === 'ne' ? toNepaliDigits(todayParts.year) : todayParts.year,
       ].join(' ')
     : today
+
+  function changeStatusFilter(value: StatusFilter): void {
+    setStatusFilter(value)
+    setPage(1)
+  }
 
   function openCreate(employee: FormEmployee): void {
     setEditing(null)
@@ -217,7 +221,7 @@ export function AttendancePage() {
       {
         onSuccess() {
           closeForm()
-          setStatusFilter('all')
+          changeStatusFilter('all')
         },
         onError(error: unknown) {
           setFormError(translate(t, mapApiError(error).messageKey))
@@ -231,6 +235,9 @@ export function AttendancePage() {
     setDeleteError(undefined)
     remove.mutate(deleting.id, {
       onSuccess() {
+        if (roster.length <= 1 && currentPage > 1) {
+          setPage(currentPage - 1)
+        }
         setDeleting(null)
       },
       onError(error: unknown) {
@@ -249,13 +256,15 @@ export function AttendancePage() {
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div className="min-w-0">
           <h2 className="font-heading text-xl font-bold text-charcoal sm:text-2xl">
-            {t('attendance:title')}
+            {t("attendance:title")}
           </h2>
-          <p className="mt-1 text-sm text-charcoal-500">{t('attendance:subtitle')}</p>
+          <p className="mt-1 text-sm text-charcoal-500">
+            {t("attendance:subtitle")}
+          </p>
         </div>
         <div className="rounded-sm border border-line bg-card-alt px-3 py-2 sm:text-right">
           <span className="block font-ui text-[11px] font-semibold uppercase tracking-wide text-charcoal-500">
-            {t('attendance:today')}
+            {t("attendance:today")}
           </span>
           <span className="mt-0.5 block font-heading text-sm font-bold text-charcoal">
             {todayLabel}
@@ -268,44 +277,44 @@ export function AttendancePage() {
         aria-busy={loading || undefined}
       >
         <StatCard
-          label={t('attendance:overview.present')}
+          label={t("attendance:overview.present")}
           value={counts.present}
           loading={loading}
           icon={<UserCheck aria-hidden="true" className="size-4" />}
-          active={statusFilter === 'present'}
-          onClick={() => setStatusFilter('present')}
+          active={statusFilter === "present"}
+          onClick={() => changeStatusFilter("present")}
         />
         <StatCard
-          label={t('attendance:overview.halfDay')}
+          label={t("attendance:overview.halfDay")}
           value={counts.half_day}
           loading={loading}
           icon={<UserMinus aria-hidden="true" className="size-4" />}
-          active={statusFilter === 'half_day'}
-          onClick={() => setStatusFilter('half_day')}
+          active={statusFilter === "half_day"}
+          onClick={() => changeStatusFilter("half_day")}
         />
         <StatCard
-          label={t('attendance:overview.absent')}
+          label={t("attendance:overview.absent")}
           value={counts.absent}
           loading={loading}
           icon={<CircleSlash aria-hidden="true" className="size-4" />}
-          active={statusFilter === 'absent'}
-          onClick={() => setStatusFilter('absent')}
+          active={statusFilter === "absent"}
+          onClick={() => changeStatusFilter("absent")}
         />
         <StatCard
-          label={t('attendance:overview.leave')}
+          label={t("attendance:overview.leave")}
           value={counts.leave}
           loading={loading}
           icon={<CalendarCheck aria-hidden="true" className="size-4" />}
-          active={statusFilter === 'leave'}
-          onClick={() => setStatusFilter('leave')}
+          active={statusFilter === "leave"}
+          onClick={() => changeStatusFilter("leave")}
         />
         <StatCard
-          label={t('attendance:overview.unmarked')}
+          label={t("attendance:overview.unmarked")}
           value={unmarkedCount}
           loading={loading}
           icon={<Users aria-hidden="true" className="size-4" />}
-          active={statusFilter === 'unmarked'}
-          onClick={() => setStatusFilter('unmarked')}
+          active={statusFilter === "unmarked"}
+          onClick={() => changeStatusFilter("unmarked")}
           className="col-span-2 md:col-span-1"
         />
       </div>
@@ -314,9 +323,12 @@ export function AttendancePage() {
         <div className="flex w-full items-center gap-3 lg:max-w-md">
           <SearchInput
             value={search}
-            onChange={(event) => setSearch(event.target.value)}
-            placeholder={t('attendance:searchPlaceholder')}
-            aria-label={t('common:search')}
+            onChange={(event) => {
+              setSearch(event.target.value);
+              setPage(1);
+            }}
+            placeholder={t("attendance:searchPlaceholder")}
+            aria-label={t("common:search")}
           />
           {fetching ? (
             <Loader2
@@ -327,7 +339,7 @@ export function AttendancePage() {
         </div>
         <div
           role="group"
-          aria-label={t('attendance:filterLabel')}
+          aria-label={t("attendance:filterLabel")}
           className="grid w-full grid-cols-3 gap-0.5 rounded-sm border border-line bg-card-alt p-0.5 lg:inline-flex lg:w-auto"
         >
           {FILTERS.map((value) => (
@@ -335,12 +347,12 @@ export function AttendancePage() {
               key={value}
               type="button"
               aria-pressed={statusFilter === value}
-              onClick={() => setStatusFilter(value)}
+              onClick={() => changeStatusFilter(value)}
               className={cn(
-                'min-h-11 rounded-[3px] px-2 font-ui text-xs font-semibold transition-colors [overflow-wrap:anywhere] lg:px-3',
+                "min-h-11 rounded-[3px] px-2 font-ui text-xs font-semibold transition-colors wrap-anywhere lg:px-3",
                 statusFilter === value
-                  ? 'bg-primary text-white'
-                  : 'text-charcoal hover:bg-charcoal-100',
+                  ? "bg-primary text-white"
+                  : "text-charcoal hover:bg-charcoal-100",
               )}
             >
               {translate(t, `attendance.filter.${value}`)}
@@ -349,7 +361,9 @@ export function AttendancePage() {
         </div>
       </div>
 
-      {loadError ? <Alert variant="error">{t('attendance:loadError')}</Alert> : null}
+      {loadError ? (
+        <Alert variant="error">{t("attendance:loadError")}</Alert>
+      ) : null}
 
       {loading ? (
         <Card className="overflow-hidden">
@@ -375,32 +389,35 @@ export function AttendancePage() {
           </span>
           <div>
             <p className="font-heading text-lg font-bold text-charcoal">
-              {t('attendance:emptyTodayTitle')}
+              {t("attendance:emptyTodayTitle")}
             </p>
             <p className="mt-1 text-sm text-charcoal-500">
-              {t('attendance:emptyTodayBody')}
+              {t("attendance:emptyTodayBody")}
             </p>
           </div>
           <Link
             to={paths.employees}
             className="font-ui text-sm font-semibold text-primary underline underline-offset-4"
           >
-            {t('attendance:manageEmployees')}
+            {t("attendance:manageEmployees")}
           </Link>
         </Card>
       ) : null}
 
-      {!loading && !loadError && roster.length > 0 && filteredRows.length === 0 ? (
+      {!loading &&
+      !loadError &&
+      roster.length > 0 &&
+      filteredRows.length === 0 ? (
         <Card className="flex flex-col items-center gap-3 p-10 text-center">
           <span className="grid size-12 place-items-center rounded-pill bg-wood-100 text-primary">
             <CalendarCheck aria-hidden="true" className="size-6" />
           </span>
           <div>
             <p className="font-heading text-lg font-bold text-charcoal">
-              {t('attendance:emptyFilteredTitle')}
+              {t("attendance:emptyFilteredTitle")}
             </p>
             <p className="mt-1 text-sm text-charcoal-500">
-              {t('attendance:emptyFilteredBody')}
+              {t("attendance:emptyFilteredBody")}
             </p>
           </div>
         </Card>
@@ -409,8 +426,8 @@ export function AttendancePage() {
       {!loading && filteredRows.length > 0 ? (
         <Card
           className={cn(
-            'overflow-hidden transition-opacity',
-            fetching ? 'opacity-60' : '',
+            "overflow-hidden transition-opacity",
+            fetching ? "opacity-60" : "",
           )}
         >
           <ul className="divide-y divide-line md:hidden">
@@ -422,8 +439,8 @@ export function AttendancePage() {
                 onCreate={openCreate}
                 onEdit={openEdit}
                 onDelete={(record) => {
-                  setDeleteError(undefined)
-                  setDeleting(record)
+                  setDeleteError(undefined);
+                  setDeleting(record);
                 }}
               />
             ))}
@@ -433,25 +450,31 @@ export function AttendancePage() {
               <thead className="bg-canvas-alt">
                 <tr className="font-ui text-[11px] uppercase tracking-wide text-charcoal-400">
                   <th scope="col" className="px-5 py-3 font-semibold">
-                    {t('attendance:columns.employee')}
+                    {t("attendance:columns.employee")}
                   </th>
                   <th scope="col" className="px-5 py-3 font-semibold">
-                    {t('attendance:columns.status')}
+                    {t("attendance:columns.status")}
                   </th>
                   <th scope="col" className="px-5 py-3 font-semibold">
-                    {t('attendance:columns.checkIn')}
+                    {t("attendance:columns.checkIn")}
                   </th>
-                  <th scope="col" className="hidden px-5 py-3 font-semibold sm:table-cell">
-                    {t('attendance:columns.checkOut')}
+                  <th
+                    scope="col"
+                    className="hidden px-5 py-3 font-semibold sm:table-cell"
+                  >
+                    {t("attendance:columns.checkOut")}
                   </th>
                   <th
                     scope="col"
                     className="hidden px-5 py-3 text-right font-semibold lg:table-cell"
                   >
-                    {t('attendance:columns.overtime')}
+                    {t("attendance:columns.overtime")}
                   </th>
-                  <th scope="col" className="hidden px-5 py-3 font-semibold xl:table-cell">
-                    {t('attendance:columns.note')}
+                  <th
+                    scope="col"
+                    className="hidden px-5 py-3 font-semibold xl:table-cell"
+                  >
+                    {t("attendance:columns.note")}
                   </th>
                   <th scope="col" className="w-28 px-2 py-3" />
                 </tr>
@@ -474,34 +497,36 @@ export function AttendancePage() {
                             {row.employee.name}
                           </span>
                           <span className="mt-0.5 block truncate font-ui text-xs text-charcoal-400">
-                            {row.employee.role_title || t('attendance:noRole')}
+                            {row.employee.role_title || t("attendance:noRole")}
                           </span>
                         </span>
                       </Link>
                     </td>
                     <td className="px-5 py-3">
-                      <AttendanceStatusBadge status={row.record?.status ?? null} />
+                      <AttendanceStatusBadge
+                        status={row.record?.status ?? null}
+                      />
                     </td>
                     <td className="whitespace-nowrap px-5 py-3 font-ui text-sm text-charcoal-500">
                       {row.record?.check_in
                         ? formatApiTimeDisplay(row.record.check_in, language)
-                        : '—'}
+                        : "—"}
                     </td>
                     <td className="hidden whitespace-nowrap px-5 py-3 font-ui text-sm text-charcoal-500 sm:table-cell">
                       {row.record?.check_out
                         ? formatApiTimeDisplay(row.record.check_out, language)
-                        : '—'}
+                        : "—"}
                     </td>
                     <td className="hidden whitespace-nowrap px-5 py-3 text-right font-ui text-sm text-charcoal-500 lg:table-cell">
                       {row.record
-                        ? `${formatNumber(row.record.overtime_hours, language)} ${t('attendance:hoursShort')}`
-                        : '—'}
+                        ? `${formatNumber(row.record.overtime_hours, language)} ${t("attendance:hoursShort")}`
+                        : "—"}
                     </td>
                     <td className="hidden max-w-xs px-5 py-3 font-ui text-sm text-charcoal-500 xl:table-cell">
                       {row.record?.note ? (
                         <span className="line-clamp-2">{row.record.note}</span>
                       ) : (
-                        '—'
+                        "—"
                       )}
                     </td>
                     <td className="whitespace-nowrap px-2 py-3">
@@ -509,33 +534,43 @@ export function AttendancePage() {
                         {row.record ? (
                           <>
                             <IconButton
-                              label={t('attendance:edit')}
+                              label={t("attendance:edit")}
                               variant="outlined"
                               size="sm"
-                              onClick={() => openEdit(row.employee, row.record as AttendanceRecord)}
+                              onClick={() =>
+                                openEdit(
+                                  row.employee,
+                                  row.record as AttendanceRecord,
+                                )
+                              }
                             >
                               <Pencil aria-hidden="true" className="size-4" />
                             </IconButton>
                             <IconButton
-                              label={t('attendance:delete')}
+                              label={t("attendance:delete")}
                               variant="destructive"
                               size="sm"
                               onClick={() => {
-                                setDeleteError(undefined)
-                                setDeleting(row.record as AttendanceRecord)
+                                setDeleteError(undefined);
+                                setDeleting(row.record as AttendanceRecord);
                               }}
                             >
                               <Trash2 aria-hidden="true" className="size-4" />
                             </IconButton>
                           </>
                         ) : (
-                          <Button size="sm" onClick={() => openCreate(row.employee)}>
-                            {t('attendance:mark')}
+                          <Button
+                            size="sm"
+                            onClick={() => openCreate(row.employee)}
+                          >
+                            {t("attendance:mark")}
                           </Button>
                         )}
                         <Link
                           to={attendanceDetail(row.employee.id)}
-                          aria-label={t('attendance:view', { name: row.employee.name })}
+                          aria-label={t("attendance:view", {
+                            name: row.employee.name,
+                          })}
                           className="inline-grid size-11 place-items-center rounded-sm text-charcoal-400 transition-all hover:text-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
                         >
                           <ChevronRight aria-hidden="true" className="size-4" />
@@ -550,36 +585,62 @@ export function AttendancePage() {
         </Card>
       ) : null}
 
-      <p className="font-ui text-xs text-charcoal-500">
+      {!loading && !loadError && totalPages > 1 ? (
+        <div className="flex flex-wrap items-center justify-between gap-2 sm:gap-3">
+          <Button
+            variant="secondary"
+            size="sm"
+            disabled={currentPage <= 1}
+            className="flex-1 sm:flex-none"
+            onClick={() => setPage(Math.max(1, currentPage - 1))}
+          >
+            {t("attendance:previous")}
+          </Button>
+          <span className="order-first w-full text-center font-ui text-sm text-charcoal-500 sm:order-0 sm:w-auto">
+            {t("attendance:pageOf", { page: currentPage, total: totalPages })}
+          </span>
+          <Button
+            variant="secondary"
+            size="sm"
+            disabled={currentPage >= totalPages}
+            className="flex-1 sm:flex-none"
+            onClick={() => setPage(Math.min(totalPages, currentPage + 1))}
+          >
+            {t("attendance:next")}
+          </Button>
+        </div>
+      ) : null}
+
+      {/* <p className="font-ui text-xs text-charcoal-500">
         {filtered
-          ? t('attendance:filteredCount', { count: filteredRows.length })
-          : t('attendance:count', { count: filteredRows.length })}
-      </p>
+          ? t("attendance:filteredCount", { count: filteredRows.length })
+          : t("attendance:count", { count: totalEmployees })}
+      </p> */}
 
       <Modal
         open={formOpen}
         onOpenChange={(open) => {
           if (!open) {
-            closeForm()
-            return
+            closeForm();
+            return;
           }
-          setFormOpen(true)
+          setFormOpen(true);
         }}
       >
         <ModalContent
-          title={editing ? t('attendance:editTitle') : t('attendance:addTitle')}
+          title={editing ? t("attendance:editTitle") : t("attendance:addTitle")}
           description={
             editing
-              ? t('attendance:editSubtitle', {
-                  name: formEmployee?.name ?? '',
+              ? t("attendance:editSubtitle", {
+                  name: formEmployee?.name ?? "",
                   date: editing.bs_date,
                 })
-              : t('attendance:addSubtitle', {
-                  name: formEmployee?.name ?? '',
+              : t("attendance:addSubtitle", {
+                  name: formEmployee?.name ?? "",
                   date: today,
                 })
           }
-          closeLabel={t('common:close')}
+          closeLabel={t("common:close")}
         >
           {formEmployee ? (
             <AttendanceForm
@@ -587,7 +648,9 @@ export function AttendancePage() {
               employeeName={formEmployee.name}
               defaultDate={today}
               record={editing ?? undefined}
-              submitLabel={editing ? t('attendance:update') : t('attendance:create')}
+              submitLabel={
+                editing ? t("attendance:update") : t("attendance:create")
+              }
               pending={editing ? update.isPending : create.isPending}
               error={formError}
               onSave={handleSave}
@@ -601,17 +664,17 @@ export function AttendancePage() {
         open={Boolean(deleting)}
         onOpenChange={(open) => {
           if (!open) {
-            setDeleting(null)
-            setDeleteError(undefined)
+            setDeleting(null);
+            setDeleteError(undefined);
           }
         }}
-        title={t('attendance:deleteTitle', {
-          name: deleting?.employee_name ?? '',
-          date: deleting?.bs_date ?? '',
+        title={t("attendance:deleteTitle", {
+          name: deleting?.employee_name ?? "",
+          date: deleting?.bs_date ?? "",
         })}
-        description={t('attendance:deleteBody')}
-        confirmLabel={t('common:confirm')}
-        cancelLabel={t('common:cancel')}
+        description={t("attendance:deleteBody")}
+        confirmLabel={t("common:confirm")}
+        cancelLabel={t("common:cancel")}
         pending={remove.isPending}
         onConfirm={handleDelete}
       >
@@ -622,7 +685,7 @@ export function AttendancePage() {
         ) : null}
       </ConfirmDialog>
     </div>
-  )
+  );
 }
 
 function AttendanceMobileRow({

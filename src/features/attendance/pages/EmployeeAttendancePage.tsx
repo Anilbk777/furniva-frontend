@@ -59,6 +59,7 @@ const monthStart = formatBsDate({
   day: 1,
 })
 const todayDate = todayBsString()
+const PAGE_SIZE = 10
 
 export function EmployeeAttendancePage() {
   const { employeeId } = useParams()
@@ -70,6 +71,7 @@ export function EmployeeAttendancePage() {
   const [appliedFrom, setAppliedFrom] = useState(monthStart)
   const [appliedTo, setAppliedTo] = useState(todayDate)
   const [rangeError, setRangeError] = useState<string | undefined>()
+  const [page, setPage] = useState(1)
   const [formOpen, setFormOpen] = useState(false)
   const [editing, setEditing] = useState<AttendanceRecord | null>(null)
   const [formError, setFormError] = useState<string | undefined>()
@@ -84,6 +86,12 @@ export function EmployeeAttendancePage() {
   const data = details.data
   const records = data?.records ?? []
   const summary = data?.summary
+  const totalPages = Math.max(1, Math.ceil(records.length / PAGE_SIZE))
+  const currentPage = Math.min(page, totalPages)
+  const pagedRecords = records.slice(
+    (currentPage - 1) * PAGE_SIZE,
+    currentPage * PAGE_SIZE,
+  )
   const fetching = details.isFetching && !details.isLoading
   const errorMessage = details.isError
     ? translate(t, mapApiError(details.error).messageKey)
@@ -163,6 +171,7 @@ export function EmployeeAttendancePage() {
     setRangeError(undefined)
     setAppliedFrom(fromInput)
     setAppliedTo(toInput)
+    setPage(1)
   }
 
   function resetRange(): void {
@@ -171,6 +180,7 @@ export function EmployeeAttendancePage() {
     setAppliedFrom(monthStart)
     setAppliedTo(todayDate)
     setRangeError(undefined)
+    setPage(1)
   }
 
   if (details.isLoading) {
@@ -215,7 +225,7 @@ export function EmployeeAttendancePage() {
         className="inline-flex items-center gap-1 self-start font-ui text-sm font-semibold text-primary underline-offset-4 hover:underline"
       >
         <ChevronLeft aria-hidden="true" className="size-4" />
-        {t('attendance:backToList')}
+        {t("attendance:backToList")}
       </Link>
 
       <div className="flex flex-wrap items-start justify-between gap-3">
@@ -226,7 +236,7 @@ export function EmployeeAttendancePage() {
               {data.employee.name}
             </h2>
             <p className="mt-1 text-sm text-charcoal-500">
-              {t('attendance:detailsSubtitle', {
+              {t("attendance:detailsSubtitle", {
                 from: data.from_date,
                 to: data.to_date,
               })}
@@ -236,13 +246,13 @@ export function EmployeeAttendancePage() {
         <div className="flex flex-wrap gap-2">
           <Link
             to={employeeDetail(data.employee.id)}
-            className={cn(buttonVariants({ variant: 'secondary' }))}
+            className={cn(buttonVariants({ variant: "secondary" }))}
           >
-            {t('attendance:employeeProfile')}
+            {t("attendance:employeeProfile")}
           </Link>
           <Button onClick={openCreate}>
             <Plus aria-hidden="true" className="size-4" />
-            {t('attendance:add')}
+            {t("attendance:add")}
           </Button>
         </div>
       </div>
@@ -250,8 +260,8 @@ export function EmployeeAttendancePage() {
       <Card>
         <div className="flex flex-wrap items-start justify-between gap-3 p-5">
           <div>
-            <CardTitle>{t('attendance:summaryTitle')}</CardTitle>
-            <CardDescription>{t('attendance:summarySubtitle')}</CardDescription>
+            <CardTitle>{t("attendance:summaryTitle")}</CardTitle>
+            <CardDescription>{t("attendance:summarySubtitle")}</CardDescription>
           </div>
           {fetching ? (
             <Loader2
@@ -263,48 +273,48 @@ export function EmployeeAttendancePage() {
         <CardContent>
           <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
             <StatCard
-              label={t('attendance:summary.totalDays')}
+              label={t("attendance:summary.totalDays")}
               value={formatNumber(summary?.total_days ?? 0, language)}
               icon={<CalendarDays aria-hidden="true" className="size-4" />}
             />
             <StatCard
-              label={t('attendance:summary.present')}
+              label={t("attendance:summary.present")}
               value={formatNumber(summary?.present ?? 0, language)}
               icon={<UserCheck aria-hidden="true" className="size-4" />}
             />
             <StatCard
-              label={t('attendance:summary.halfDay')}
+              label={t("attendance:summary.halfDay")}
               value={formatNumber(summary?.half_day ?? 0, language)}
               icon={<UserMinus aria-hidden="true" className="size-4" />}
             />
             <StatCard
-              label={t('attendance:summary.absent')}
+              label={t("attendance:summary.absent")}
               value={formatNumber(summary?.absent ?? 0, language)}
               icon={<CircleSlash aria-hidden="true" className="size-4" />}
             />
             <StatCard
-              label={t('attendance:summary.leave')}
+              label={t("attendance:summary.leave")}
               value={formatNumber(summary?.leave ?? 0, language)}
               icon={<CalendarCheck aria-hidden="true" className="size-4" />}
             />
             <StatCard
-              label={t('attendance:summary.workedDays')}
+              label={t("attendance:summary.workedDays")}
               value={formatNumber(summary?.worked_days ?? 0, language)}
               icon={<CalendarCheck aria-hidden="true" className="size-4" />}
             />
             <StatCard
-              label={t('attendance:summary.unmarkedDays')}
+              label={t("attendance:summary.unmarkedDays")}
               value={formatNumber(summary?.unmarked_days ?? 0, language)}
               icon={<CalendarDays aria-hidden="true" className="size-4" />}
             />
             <StatCard
-              label={t('attendance:summary.overtime')}
+              label={t("attendance:summary.overtime")}
               value={formatNumber(summary?.total_overtime_hours ?? 0, language)}
               icon={<Clock3 aria-hidden="true" className="size-4" />}
             />
           </div>
           <p className="mt-3 font-ui text-xs text-charcoal-500">
-            {t('attendance:unmarkedHint')}
+            {t("attendance:unmarkedHint")}
           </p>
         </CardContent>
       </Card>
@@ -312,12 +322,12 @@ export function EmployeeAttendancePage() {
       <Card>
         <div className="flex flex-wrap items-start justify-between gap-3 p-5">
           <div>
-            <CardTitle>{t('attendance:recordsTitle')}</CardTitle>
-            <CardDescription>{t('attendance:recordsSubtitle')}</CardDescription>
+            <CardTitle>{t("attendance:recordsTitle")}</CardTitle>
+            <CardDescription>{t("attendance:recordsSubtitle")}</CardDescription>
           </div>
           <Button onClick={openCreate}>
             <Plus aria-hidden="true" className="size-4" />
-            {t('attendance:add')}
+            {t("attendance:add")}
           </Button>
         </div>
         <CardContent className="flex flex-col gap-5">
@@ -325,7 +335,7 @@ export function EmployeeAttendancePage() {
             <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-[1fr_1fr_auto]">
               <FormField
                 id="attendance-range-from"
-                label={t('attendance:range.from')}
+                label={t("attendance:range.from")}
                 error={rangeError}
               >
                 {(describedBy) => (
@@ -334,7 +344,7 @@ export function EmployeeAttendancePage() {
                     value={fromInput}
                     onChange={setFromInput}
                     language={language}
-                    openLabel={t('common:pickDate')}
+                    openLabel={t("common:pickDate")}
                     placeholder="2083-08-01"
                     invalid={Boolean(rangeError)}
                     describedBy={describedBy}
@@ -343,7 +353,7 @@ export function EmployeeAttendancePage() {
               </FormField>
               <FormField
                 id="attendance-range-to"
-                label={t('attendance:range.to')}
+                label={t("attendance:range.to")}
               >
                 {(describedBy) => (
                   <BsDatePicker
@@ -351,7 +361,7 @@ export function EmployeeAttendancePage() {
                     value={toInput}
                     onChange={setToInput}
                     language={language}
-                    openLabel={t('common:pickDate')}
+                    openLabel={t("common:pickDate")}
                     placeholder="2083-08-29"
                     invalid={Boolean(rangeError)}
                     describedBy={describedBy}
@@ -360,15 +370,15 @@ export function EmployeeAttendancePage() {
               </FormField>
               <div className="flex items-end gap-2">
                 <Button size="sm" onClick={applyRange}>
-                  {t('attendance:range.apply')}
+                  {t("attendance:range.apply")}
                 </Button>
                 <Button size="sm" variant="secondary" onClick={resetRange}>
-                  {t('attendance:range.reset')}
+                  {t("attendance:range.reset")}
                 </Button>
               </div>
             </div>
             <p className="mt-3 font-ui text-xs text-charcoal-500">
-              {t('attendance:count', { count: data.total_records })}
+              {t("attendance:count", { count: data.total_records })}
             </p>
           </div>
 
@@ -376,36 +386,45 @@ export function EmployeeAttendancePage() {
 
           <div
             className={cn(
-              'overflow-x-auto transition-opacity',
-              fetching ? 'opacity-60' : '',
+              "overflow-x-auto transition-opacity",
+              fetching ? "opacity-60" : "",
             )}
           >
             <table className="w-full border-collapse text-left">
               <thead>
                 <tr className="border-b border-line font-ui text-[11px] uppercase tracking-wide text-charcoal-400">
                   <th scope="col" className="px-3 py-2 font-semibold">
-                    {t('attendance:columns.date')}
+                    {t("attendance:columns.date")}
                   </th>
                   <th scope="col" className="px-3 py-2 font-semibold">
-                    {t('attendance:columns.status')}
+                    {t("attendance:columns.status")}
                   </th>
                   <th scope="col" className="px-3 py-2 font-semibold">
-                    {t('attendance:columns.checkIn')}
+                    {t("attendance:columns.checkIn")}
                   </th>
-                  <th scope="col" className="hidden px-3 py-2 font-semibold sm:table-cell">
-                    {t('attendance:columns.checkOut')}
+                  <th
+                    scope="col"
+                    className="hidden px-3 py-2 font-semibold sm:table-cell"
+                  >
+                    {t("attendance:columns.checkOut")}
                   </th>
                   <th
                     scope="col"
                     className="hidden px-3 py-2 text-right font-semibold md:table-cell"
                   >
-                    {t('attendance:columns.overtime')}
+                    {t("attendance:columns.overtime")}
                   </th>
-                  <th scope="col" className="hidden px-3 py-2 font-semibold xl:table-cell">
-                    {t('attendance:columns.note')}
+                  <th
+                    scope="col"
+                    className="hidden px-3 py-2 font-semibold xl:table-cell"
+                  >
+                    {t("attendance:columns.note")}
                   </th>
-                  <th scope="col" className="px-3 py-2 text-right font-semibold">
-                    {t('attendance:columns.actions')}
+                  <th
+                    scope="col"
+                    className="px-3 py-2 text-right font-semibold"
+                  >
+                    {t("attendance:columns.actions")}
                   </th>
                 </tr>
               </thead>
@@ -416,11 +435,11 @@ export function EmployeeAttendancePage() {
                       colSpan={7}
                       className="px-3 py-8 text-center text-sm text-charcoal-500"
                     >
-                      {t('attendance:emptyRecords')}
+                      {t("attendance:emptyRecords")}
                     </td>
                   </tr>
                 ) : (
-                  records.map((record) => (
+                  pagedRecords.map((record) => (
                     <tr
                       key={record.id}
                       className="transition-colors hover:bg-card-alt"
@@ -434,27 +453,27 @@ export function EmployeeAttendancePage() {
                       <td className="whitespace-nowrap px-3 py-3 font-ui text-sm text-charcoal-500">
                         {record.check_in
                           ? formatApiTimeDisplay(record.check_in, language)
-                          : '—'}
+                          : "—"}
                       </td>
                       <td className="hidden whitespace-nowrap px-3 py-3 font-ui text-sm text-charcoal-500 sm:table-cell">
                         {record.check_out
                           ? formatApiTimeDisplay(record.check_out, language)
-                          : '—'}
+                          : "—"}
                       </td>
                       <td className="hidden whitespace-nowrap px-3 py-3 text-right font-ui text-sm text-charcoal-500 md:table-cell">
-                        {`${formatNumber(record.overtime_hours, language)} ${t('attendance:hoursShort')}`}
+                        {`${formatNumber(record.overtime_hours, language)} ${t("attendance:hoursShort")}`}
                       </td>
                       <td className="hidden max-w-xs px-3 py-3 font-ui text-sm text-charcoal-500 xl:table-cell">
                         {record.note ? (
                           <span className="line-clamp-2">{record.note}</span>
                         ) : (
-                          '—'
+                          "—"
                         )}
                       </td>
                       <td className="whitespace-nowrap px-3 py-3">
                         <div className="flex justify-end gap-1">
                           <IconButton
-                            label={t('attendance:edit')}
+                            label={t("attendance:edit")}
                             variant="outlined"
                             size="sm"
                             onClick={() => openEdit(record)}
@@ -462,12 +481,12 @@ export function EmployeeAttendancePage() {
                             <Pencil aria-hidden="true" className="size-4" />
                           </IconButton>
                           <IconButton
-                            label={t('attendance:delete')}
+                            label={t("attendance:delete")}
                             variant="destructive"
                             size="sm"
                             onClick={() => {
-                              setDeleteError(undefined)
-                              setDeleting(record)
+                              setDeleteError(undefined);
+                              setDeleting(record);
                             }}
                           >
                             <Trash2 aria-hidden="true" className="size-4" />
@@ -481,8 +500,35 @@ export function EmployeeAttendancePage() {
             </table>
           </div>
 
+          {totalPages > 1 ? (
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <Button
+                variant="secondary"
+                size="sm"
+                disabled={currentPage <= 1}
+                onClick={() => setPage(Math.max(1, currentPage - 1))}
+              >
+                {t("attendance:previous")}
+              </Button>
+              <span className="order-first w-full text-center font-ui text-sm text-charcoal-500 sm:order-0 sm:w-auto">
+                {t("attendance:pageOf", {
+                  page: currentPage,
+                  total: totalPages,
+                })}
+              </span>
+              <Button
+                variant="secondary"
+                size="sm"
+                disabled={currentPage >= totalPages}
+                onClick={() => setPage(Math.min(totalPages, currentPage + 1))}
+              >
+                {t("attendance:next")}
+              </Button>
+            </div>
+          ) : null}
+
           <p className="font-ui text-xs text-charcoal-500">
-            {t('attendance:unmarkedHint')}
+            {t("attendance:unmarkedHint")}
           </p>
         </CardContent>
       </Card>
@@ -491,33 +537,35 @@ export function EmployeeAttendancePage() {
         open={formOpen}
         onOpenChange={(open) => {
           if (!open) {
-            closeForm()
-            return
+            closeForm();
+            return;
           }
-          setFormOpen(true)
+          setFormOpen(true);
         }}
       >
         <ModalContent
-          title={editing ? t('attendance:editTitle') : t('attendance:addTitle')}
+          title={editing ? t("attendance:editTitle") : t("attendance:addTitle")}
           description={
             editing
-              ? t('attendance:editSubtitle', {
+              ? t("attendance:editSubtitle", {
                   name: data.employee.name,
                   date: editing.bs_date,
                 })
-              : t('attendance:addSubtitle', {
+              : t("attendance:addSubtitle", {
                   name: data.employee.name,
                   date: defaultDate,
                 })
           }
-          closeLabel={t('common:close')}
+          closeLabel={t("common:close")}
         >
           <AttendanceForm
-            key={editing?.id ?? 'new'}
+            key={editing?.id ?? "new"}
             employeeName={data.employee.name}
             defaultDate={defaultDate}
             record={editing ?? undefined}
-            submitLabel={editing ? t('attendance:update') : t('attendance:create')}
+            submitLabel={
+              editing ? t("attendance:update") : t("attendance:create")
+            }
             pending={editing ? update.isPending : create.isPending}
             error={formError}
             onSave={handleSave}
@@ -530,17 +578,17 @@ export function EmployeeAttendancePage() {
         open={Boolean(deleting)}
         onOpenChange={(open) => {
           if (!open) {
-            setDeleting(null)
-            setDeleteError(undefined)
+            setDeleting(null);
+            setDeleteError(undefined);
           }
         }}
-        title={t('attendance:deleteTitle', {
+        title={t("attendance:deleteTitle", {
           name: data.employee.name,
-          date: deleting?.bs_date ?? '',
+          date: deleting?.bs_date ?? "",
         })}
-        description={t('attendance:deleteBody')}
-        confirmLabel={t('common:confirm')}
-        cancelLabel={t('common:cancel')}
+        description={t("attendance:deleteBody")}
+        confirmLabel={t("common:confirm")}
+        cancelLabel={t("common:cancel")}
         pending={remove.isPending}
         onConfirm={handleDelete}
       >
@@ -551,5 +599,5 @@ export function EmployeeAttendancePage() {
         ) : null}
       </ConfirmDialog>
     </div>
-  )
+  );
 }

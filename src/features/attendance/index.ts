@@ -22,4 +22,6 @@ export type {
   AttendanceSummary,
   AttendanceUpdateInput,
   EmployeeAttendanceDetails,
+  TodayAttendanceEmployee,
+  TodayAttendanceResult,
 } from 'src/features/attendance/types'

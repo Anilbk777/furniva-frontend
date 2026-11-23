@@ -244,7 +244,7 @@ export function EmployeeDetailPage() {
         className="inline-flex items-center gap-1 self-start font-ui text-sm font-semibold text-primary underline-offset-4 hover:underline"
       >
         <ChevronLeft aria-hidden="true" className="size-4" />
-        {t('employees:backToList')}
+        {t("employees:backToList")}
       </Link>
 
       <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
@@ -252,27 +252,27 @@ export function EmployeeDetailPage() {
           <EmployeeAvatar name={brief.name} />
           <div className="min-w-0">
             <div className="flex flex-wrap items-center gap-2">
-              <h2 className="min-w-0 font-heading text-xl font-bold text-charcoal [overflow-wrap:anywhere] sm:text-2xl">
+              <h2 className="min-w-0 font-heading text-xl font-bold text-charcoal wrap-anywhere sm:text-2xl">
                 {brief.name}
               </h2>
               <StatusBadge active={brief.is_active} />
             </div>
             <p className="mt-1 truncate text-sm text-charcoal-500">
-              {brief.role_title || t('employees:noRole')}
+              {brief.role_title || t("employees:noRole")}
             </p>
           </div>
         </div>
         <div className="grid w-full grid-cols-2 gap-2 lg:flex lg:w-auto lg:flex-wrap">
           <Link
             to={attendanceDetail(brief.id)}
-            className={cn(buttonVariants({ variant: 'secondary' }), 'truncate')}
+            className={cn(buttonVariants({ variant: "secondary" }), "truncate")}
           >
             <CalendarCheck aria-hidden="true" className="size-4 shrink-0" />
-            <span className="truncate">{t('attendance:openAttendance')}</span>
+            <span className="truncate">{t("attendance:openAttendance")}</span>
           </Link>
           <Button variant="secondary" onClick={() => setEditing(true)}>
             <Pencil aria-hidden="true" className="size-4 shrink-0" />
-            {t('common:edit')}
+            {t("common:edit")}
           </Button>
           <Button
             variant="outlined"
@@ -285,11 +285,13 @@ export function EmployeeDetailPage() {
               <UserCheck aria-hidden="true" className="size-4 shrink-0" />
             )}
             <span className="truncate">
-              {brief.is_active ? t('employees:markInactive') : t('employees:markActive')}
+              {brief.is_active
+                ? t("employees:markInactive")
+                : t("employees:markActive")}
             </span>
           </Button>
           <Button variant="destructive" onClick={() => setConfirmOpen(true)}>
-            {t('common:delete')}
+            {t("common:delete")}
           </Button>
         </div>
       </div>
@@ -297,28 +299,30 @@ export function EmployeeDetailPage() {
       <Card className="min-w-0">
         <div className="flex flex-col gap-3 p-5 sm:flex-row sm:items-start sm:justify-between">
           <div className="min-w-0">
-            <CardTitle>{t('transactions:sectionTitle')}</CardTitle>
-            <CardDescription>{t('transactions:sectionSubtitle')}</CardDescription>
+            <CardTitle>{t("transactions:sectionTitle")}</CardTitle>
+            <CardDescription>
+              {t("transactions:sectionSubtitle")}
+            </CardDescription>
           </div>
           <Button onClick={openCreateTransaction} className="w-full sm:w-auto">
             <Plus aria-hidden="true" className="size-4" />
-            {t('transactions:add')}
+            {t("transactions:add")}
           </Button>
         </div>
         <CardContent className="flex flex-col gap-5">
           <div className="grid gap-3 text-sm sm:grid-cols-3">
             <Stat
-              label={t('transactions:totals.advance')}
+              label={t("transactions:totals.advance")}
               value={formatMoney(advance, language)}
               loading={transactionsLoading}
             />
             <Stat
-              label={t('transactions:totals.salary')}
+              label={t("transactions:totals.salary")}
               value={formatMoney(salary, language)}
               loading={transactionsLoading}
             />
             <Stat
-              label={t('transactions:totals.total')}
+              label={t("transactions:totals.total")}
               value={formatMoney(total, language)}
               loading={transactionsLoading}
             />
@@ -328,7 +332,7 @@ export function EmployeeDetailPage() {
             <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
               <FormField
                 id="tx-from"
-                label={t('transactions:filters.from')}
+                label={t("transactions:filters.from")}
                 error={rangeError}
               >
                 {(describedBy) => (
@@ -337,39 +341,44 @@ export function EmployeeDetailPage() {
                     value={fromInput}
                     onChange={setFromInput}
                     language={language}
-                    openLabel={t('common:pickDate')}
+                    openLabel={t("common:pickDate")}
                     placeholder="2083-08-01"
                     invalid={Boolean(rangeError)}
                     describedBy={describedBy}
                   />
                 )}
               </FormField>
-              <FormField id="tx-to" label={t('transactions:filters.to')}>
+              <FormField id="tx-to" label={t("transactions:filters.to")}>
                 {(describedBy) => (
                   <BsDatePicker
                     id="tx-to"
                     value={toInput}
                     onChange={setToInput}
                     language={language}
-                    openLabel={t('common:pickDate')}
+                    openLabel={t("common:pickDate")}
                     placeholder="2083-08-29"
                     invalid={Boolean(rangeError)}
                     describedBy={describedBy}
                   />
                 )}
               </FormField>
-              <FormField id="tx-filter-kind" label={t('transactions:filters.kind')}>
+              <FormField
+                id="tx-filter-kind"
+                label={t("transactions:filters.kind")}
+              >
                 {(describedBy) => (
                   <Select
                     id="tx-filter-kind"
                     aria-describedby={describedBy}
                     value={kind}
                     onChange={(event) => {
-                      setKind(event.target.value as EmployeeTxKind | '')
-                      setPage(1)
+                      setKind(event.target.value as EmployeeTxKind | "");
+                      setPage(1);
                     }}
                   >
-                    <option value="">{t('transactions:filters.allKinds')}</option>
+                    <option value="">
+                      {t("transactions:filters.allKinds")}
+                    </option>
                     {employeeTxKinds.map((value) => (
                       <option key={value} value={value}>
                         {translate(t, `employees.kinds.${value}`)}
@@ -380,10 +389,10 @@ export function EmployeeDetailPage() {
               </FormField>
               <div className="grid grid-cols-2 gap-2 sm:flex sm:items-end">
                 <Button size="sm" onClick={applyRange}>
-                  {t('transactions:filters.apply')}
+                  {t("transactions:filters.apply")}
                 </Button>
                 <Button size="sm" variant="secondary" onClick={resetFilters}>
-                  {t('transactions:filters.reset')}
+                  {t("transactions:filters.reset")}
                 </Button>
               </div>
             </div>
@@ -395,12 +404,14 @@ export function EmployeeDetailPage() {
                 />
               ) : null}
               <span className="ml-auto font-ui text-xs text-charcoal-500">
-                {totals ? t('transactions:totals.count', { count }) : '…'}
+                {totals ? t("transactions:totals.count", { count }) : "…"}
               </span>
             </div>
           </div>
 
-          {tx.isError ? <Alert variant="error">{t('transactions:loadError')}</Alert> : null}
+          {tx.isError ? (
+            <Alert variant="error">{t("transactions:loadError")}</Alert>
+          ) : null}
 
           {transactionsLoading ? (
             <div className="flex flex-col gap-2">
@@ -411,16 +422,16 @@ export function EmployeeDetailPage() {
           ) : (
             <div
               className={cn(
-                'transition-opacity',
-                transactionsFetching ? 'opacity-60' : '',
+                "transition-opacity",
+                transactionsFetching ? "opacity-60" : "",
               )}
             >
-              <ul className="divide-y divide-line md:hidden">
+              <ul className="divide-y divide-line overflow-hidden rounded-sm border border-line md:hidden">
                 {rows.length === 0 ? (
                   <li className="px-3 py-8 text-center text-sm text-charcoal-500">
                     {hasRange || kind
-                      ? t('transactions:empty')
-                      : t('transactions:emptyAll')}
+                      ? t("transactions:empty")
+                      : t("transactions:emptyAll")}
                   </li>
                 ) : (
                   rows.map((transaction) => (
@@ -430,70 +441,76 @@ export function EmployeeDetailPage() {
                       language={language}
                       onEdit={() => openEditTransaction(transaction)}
                       onDelete={() => {
-                        setTxDeleteError(undefined)
-                        setTxDeleting(transaction)
+                        setTxDeleteError(undefined);
+                        setTxDeleting(transaction);
                       }}
                     />
                   ))
                 )}
               </ul>
               <div className="hidden overflow-x-auto md:block">
-                <table className="w-full border-collapse text-left md:min-w-[36rem]">
-                <thead>
-                  <tr className="border-b border-line font-ui text-[11px] uppercase tracking-wide text-charcoal-400">
-                    <th scope="col" className="px-3 py-2 font-semibold">
-                      {t('transactions:columns.date')}
-                    </th>
-                    <th scope="col" className="px-3 py-2 font-semibold">
-                      {t('transactions:columns.kind')}
-                    </th>
-                    <th
-                      scope="col"
-                      className="hidden px-3 py-2 font-semibold sm:table-cell"
-                    >
-                      {t('transactions:columns.paymentMethod')}
-                    </th>
-                    <th
-                      scope="col"
-                      className="hidden px-3 py-2 font-semibold md:table-cell"
-                    >
-                      {t('transactions:columns.note')}
-                    </th>
-                    <th scope="col" className="px-3 py-2 text-right font-semibold">
-                      {t('transactions:columns.amount')}
-                    </th>
-                    <th scope="col" className="px-3 py-2 text-right font-semibold">
-                      {t('transactions:columns.actions')}
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-line">
-                  {rows.length === 0 ? (
-                    <tr>
-                      <td
-                        colSpan={6}
-                        className="px-3 py-8 text-center text-sm text-charcoal-500"
+                <table className="w-full border-collapse text-left md:min-w-xl">
+                  <thead>
+                    <tr className="border-b border-line font-ui text-[11px] uppercase tracking-wide text-charcoal-400">
+                      <th scope="col" className="px-3 py-2 font-semibold">
+                        {t("transactions:columns.date")}
+                      </th>
+                      <th scope="col" className="px-3 py-2 font-semibold">
+                        {t("transactions:columns.kind")}
+                      </th>
+                      <th
+                        scope="col"
+                        className="hidden px-3 py-2 font-semibold sm:table-cell"
                       >
-                        {hasRange || kind
-                          ? t('transactions:empty')
-                          : t('transactions:emptyAll')}
-                      </td>
+                        {t("transactions:columns.paymentMethod")}
+                      </th>
+                      <th
+                        scope="col"
+                        className="hidden px-3 py-2 font-semibold md:table-cell"
+                      >
+                        {t("transactions:columns.note")}
+                      </th>
+                      <th
+                        scope="col"
+                        className="px-3 py-2 text-right font-semibold"
+                      >
+                        {t("transactions:columns.amount")}
+                      </th>
+                      <th
+                        scope="col"
+                        className="px-3 py-2 text-right font-semibold"
+                      >
+                        {t("transactions:columns.actions")}
+                      </th>
                     </tr>
-                  ) : (
-                    rows.map((transaction) => (
-                      <TransactionRow
-                        key={transaction.id}
-                        transaction={transaction}
-                        language={language}
-                        onEdit={() => openEditTransaction(transaction)}
-                        onDelete={() => {
-                          setTxDeleteError(undefined)
-                          setTxDeleting(transaction)
-                        }}
-                      />
-                    ))
-                  )}
-                </tbody>
+                  </thead>
+                  <tbody className="divide-y divide-line">
+                    {rows.length === 0 ? (
+                      <tr>
+                        <td
+                          colSpan={6}
+                          className="px-3 py-8 text-center text-sm text-charcoal-500"
+                        >
+                          {hasRange || kind
+                            ? t("transactions:empty")
+                            : t("transactions:emptyAll")}
+                        </td>
+                      </tr>
+                    ) : (
+                      rows.map((transaction) => (
+                        <TransactionRow
+                          key={transaction.id}
+                          transaction={transaction}
+                          language={language}
+                          onEdit={() => openEditTransaction(transaction)}
+                          onDelete={() => {
+                            setTxDeleteError(undefined);
+                            setTxDeleting(transaction);
+                          }}
+                        />
+                      ))
+                    )}
+                  </tbody>
                 </table>
               </div>
             </div>
@@ -508,19 +525,21 @@ export function EmployeeDetailPage() {
                 className="flex-1 sm:flex-none"
                 onClick={() => setPage((value) => Math.max(1, value - 1))}
               >
-                {t('transactions:previous')}
+                {t("transactions:previous")}
               </Button>
-              <span className="order-first w-full text-center font-ui text-sm text-charcoal-500 sm:order-none sm:w-auto">
-                {t('transactions:pageOf', { page, total: totalPages })}
+              <span className="order-first w-full text-center font-ui text-sm text-charcoal-500 sm:order-0 sm:w-auto">
+                {t("transactions:pageOf", { page, total: totalPages })}
               </span>
               <Button
                 variant="secondary"
                 size="sm"
                 disabled={page >= totalPages}
                 className="flex-1 sm:flex-none"
-                onClick={() => setPage((value) => Math.min(totalPages, value + 1))}
+                onClick={() =>
+                  setPage((value) => Math.min(totalPages, value + 1))
+                }
               >
-                {t('transactions:next')}
+                {t("transactions:next")}
               </Button>
             </div>
           ) : null}
@@ -530,14 +549,14 @@ export function EmployeeDetailPage() {
       <Modal
         open={editing}
         onOpenChange={(open) => {
-          setEditing(open)
-          if (!open) setFormError(undefined)
+          setEditing(open);
+          if (!open) setFormError(undefined);
         }}
       >
         <ModalContent
-          title={t('employees:editTitle')}
-          description={t('employees:editSubtitle')}
-          closeLabel={t('common:close')}
+          title={t("employees:editTitle")}
+          description={t("employees:editSubtitle")}
+          closeLabel={t("common:close")}
         >
           {editEmployee.isLoading ? (
             <div className="flex flex-col gap-3">
@@ -546,17 +565,17 @@ export function EmployeeDetailPage() {
               <Skeleton className="h-11" />
             </div>
           ) : editEmployee.isError || !editEmployee.data ? (
-            <Alert variant="error">{t('employees:loadError')}</Alert>
+            <Alert variant="error">{t("employees:loadError")}</Alert>
           ) : (
             <EmployeeForm
               employee={editEmployee.data}
               pending={update.isPending}
               error={formError}
-              submitLabel={t('common:save')}
+              submitLabel={t("common:save")}
               onSave={handleSave}
               onCancel={() => {
-                setEditing(false)
-                setFormError(undefined)
+                setEditing(false);
+                setFormError(undefined);
               }}
             />
           )}
@@ -567,30 +586,30 @@ export function EmployeeDetailPage() {
         open={txOpen}
         onOpenChange={(open) => {
           if (!open) {
-            closeTransactionModal()
-            return
+            closeTransactionModal();
+            return;
           }
-          setTxOpen(true)
+          setTxOpen(true);
         }}
       >
         <ModalContent
           title={
-            txEditing ? t('transactions:editTitle') : t('transactions:addTitle')
+            txEditing ? t("transactions:editTitle") : t("transactions:addTitle")
           }
           description={
             txEditing
-              ? t('transactions:editSubtitle', { name: brief.name })
-              : t('transactions:addSubtitle', { name: brief.name })
+              ? t("transactions:editSubtitle", { name: brief.name })
+              : t("transactions:addSubtitle", { name: brief.name })
           }
-          closeLabel={t('common:close')}
+          closeLabel={t("common:close")}
         >
           <TransactionForm
-            key={txEditing?.id ?? 'new'}
+            key={txEditing?.id ?? "new"}
             employeeId={brief.id}
             defaultDate={defaultDate}
             transaction={txEditing ?? undefined}
             submitLabel={
-              txEditing ? t('transactions:update') : t('transactions:create')
+              txEditing ? t("transactions:update") : t("transactions:create")
             }
             pending={txEditing ? updateTx.isPending : createTx.isPending}
             error={txError}
@@ -604,16 +623,16 @@ export function EmployeeDetailPage() {
         open={Boolean(txDeleting)}
         onOpenChange={(open) => {
           if (!open) {
-            setTxDeleting(null)
-            setTxDeleteError(undefined)
+            setTxDeleting(null);
+            setTxDeleteError(undefined);
           }
         }}
-        title={t('transactions:deleteTitle', {
-          date: txDeleting?.bs_date ?? '',
+        title={t("transactions:deleteTitle", {
+          date: txDeleting?.bs_date ?? "",
         })}
-        description={t('transactions:deleteBody')}
-        confirmLabel={t('common:confirm')}
-        cancelLabel={t('common:cancel')}
+        description={t("transactions:deleteBody")}
+        confirmLabel={t("common:confirm")}
+        cancelLabel={t("common:cancel")}
         pending={deleteTx.isPending}
         onConfirm={handleDeleteTransaction}
       >
@@ -627,22 +646,22 @@ export function EmployeeDetailPage() {
       <ConfirmDialog
         open={confirmOpen}
         onOpenChange={setConfirmOpen}
-        title={t('employees:deleteTitle', { name: brief.name })}
-        description={t('employees:deleteBody')}
-        confirmLabel={t('common:confirm')}
-        cancelLabel={t('common:cancel')}
+        title={t("employees:deleteTitle", { name: brief.name })}
+        description={t("employees:deleteBody")}
+        confirmLabel={t("common:confirm")}
+        cancelLabel={t("common:cancel")}
         pending={remove.isPending}
         onConfirm={() => {
           remove.mutate(undefined, {
             onSuccess() {
-              setConfirmOpen(false)
-              navigate(paths.employees, { replace: true })
+              setConfirmOpen(false);
+              navigate(paths.employees, { replace: true });
             },
-          })
+          });
         }}
       />
     </div>
-  )
+  );
 }
 
 function TransactionMobileRow({
@@ -672,21 +691,21 @@ function TransactionMobileRow({
             {translate(t, `employees.kinds.${transaction.kind}`)}
           </p>
         </div>
-        <span className="shrink-0 text-right font-ui text-sm font-semibold text-charcoal [overflow-wrap:anywhere]">
+        <span className="shrink-0 text-right font-ui text-sm font-semibold text-charcoal wrap-anywhere">
           {formatMoney(transaction.amount, language)}
         </span>
       </div>
       <div className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 font-ui text-xs text-charcoal-500">
         <span>{payment}</span>
         {transaction.note ? (
-          <span className="min-w-0 line-clamp-2 [overflow-wrap:anywhere]">
+          <span className="min-w-0 line-clamp-2 wrap-anywhere">
             {transaction.note}
           </span>
         ) : null}
       </div>
       <div className="mt-3 flex justify-end gap-1">
         <IconButton
-          label={t('common:edit')}
+          label={t("common:edit")}
           variant="outlined"
           size="sm"
           onClick={onEdit}
@@ -694,7 +713,7 @@ function TransactionMobileRow({
           <Pencil aria-hidden="true" className="size-4" />
         </IconButton>
         <IconButton
-          label={t('common:delete')}
+          label={t("common:delete")}
           variant="destructive"
           size="sm"
           onClick={onDelete}
@@ -703,7 +722,7 @@ function TransactionMobileRow({
         </IconButton>
       </div>
     </li>
-  )
+  );
 }
 
 function TransactionRow({
@@ -787,12 +806,12 @@ function Stat({
       {loading ? (
         <Skeleton className="mt-1.5 h-5 w-24" />
       ) : (
-        <span className="mt-1 block font-heading text-lg font-bold text-charcoal tabular-nums [overflow-wrap:anywhere]">
+        <span className="mt-1 block font-heading text-lg font-bold text-charcoal tabular-nums wrap-anywhere">
           {value}
         </span>
       )}
     </div>
-  )
+  );
 }
 
 function EmployeeAvatar({ name }: { name: string }) {

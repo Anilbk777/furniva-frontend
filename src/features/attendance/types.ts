@@ -44,6 +44,26 @@ export interface AttendanceListResult {
   pagination: Pagination
 }
 
+export interface TodayAttendanceEmployee {
+  employee_id: string
+  attendance_id: string | null
+  name: string
+  role: string | null
+  phone: string | null
+  status: AttendanceStatus | string | null
+  bs_date: string
+  check_in: string | null
+  check_out: string | null
+  overtime_hours: number | string
+  note: string | null
+}
+
+export interface TodayAttendanceResult {
+  bs_date: string
+  employees: TodayAttendanceEmployee[]
+  pagination: Pagination
+}
+
 export interface AttendanceInput {
   employee_id: string
   bs_date: string
