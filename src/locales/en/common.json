@@ -25,6 +25,14 @@
   "nextMonth": "Next month",
   "previousYear": "Previous year",
   "nextYear": "Next year",
+  "time": {
+    "hour": "Hour",
+    "minute": "Minute",
+    "meridiem": "AM or PM",
+    "placeholder": "--",
+    "am": "AM",
+    "pm": "PM"
+  },
   "weekdays": {
     "sun": "Sun",
     "mon": "Mon",

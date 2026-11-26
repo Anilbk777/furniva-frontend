@@ -6,7 +6,7 @@ import {
   type AttendanceStatus,
   type AttendanceUpdateInput,
 } from 'src/features/attendance/types'
-import { parseApiTime, timeToMinutes } from 'src/features/attendance/utils/time'
+import { parseApiTime, timeToMinutes } from 'src/lib/time'
 
 const timeSchema = z
   .string()

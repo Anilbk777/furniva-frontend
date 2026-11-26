@@ -1,12 +1,8 @@
 import { describe, expect, it } from 'vitest'
 
-import {
-  formatApiTime,
-  parseApiTime,
-  timeToMinutes,
-} from 'src/features/attendance/utils/time'
+import { formatApiTime, parseApiTime, timeToMinutes } from 'src/lib/time'
 
-describe('attendance time helpers', () => {
+describe('time helpers', () => {
   it('parses 12-hour API times', () => {
     expect(parseApiTime('09:30 AM')).toEqual({ hour: 9, minute: 30, meridiem: 'AM' })
     expect(parseApiTime('12:05 PM')).toEqual({ hour: 12, minute: 5, meridiem: 'PM' })

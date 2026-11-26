@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { Select } from 'src/components/ui/Select'
-import { formatApiTime, parseApiTime, type Meridiem } from 'src/features/attendance/utils/time'
+import { formatApiTime, parseApiTime, type Meridiem } from 'src/lib/time'
 import { toNepaliDigits } from 'src/lib/bsDate'
 import { cn } from 'src/lib/cn'
 
@@ -43,7 +43,7 @@ export function Time12Picker({
   disabled,
   className,
 }: Time12PickerProps) {
-  const { t, i18n } = useTranslation(['attendance', 'common'])
+  const { t, i18n } = useTranslation('common')
   const language = i18n.resolvedLanguage === 'ne' ? 'ne' : 'en'
   const [state, setState] = useState<{ source: string; parts: TimePartsState }>(
     () => ({ source: value, parts: partsFromValue(value) }),
@@ -81,11 +81,11 @@ export function Time12Picker({
       <Select
         id={id}
         {...sharedProps}
-        aria-label={t('attendance:time.hour')}
+        aria-label={t('time.hour')}
         value={parts.hour}
         onChange={(event) => update({ ...parts, hour: event.target.value })}
       >
-        <option value="">{t('attendance:time.placeholder')}</option>
+        <option value="">{t('time.placeholder')}</option>
         {Array.from({ length: 12 }, (_, index) => index + 1).map((hour) => (
           <option key={hour} value={hour}>
             {digits(String(hour).padStart(2, '0'))}
@@ -95,11 +95,11 @@ export function Time12Picker({
 
       <Select
         {...sharedProps}
-        aria-label={t('attendance:time.minute')}
+        aria-label={t('time.minute')}
         value={parts.minute}
         onChange={(event) => update({ ...parts, minute: event.target.value })}
       >
-        <option value="">{t('attendance:time.placeholder')}</option>
+        <option value="">{t('time.placeholder')}</option>
         {Array.from({ length: 60 }, (_, index) => index).map((minute) => (
           <option key={minute} value={String(minute).padStart(2, '0')}>
             {digits(String(minute).padStart(2, '0'))}
@@ -109,15 +109,15 @@ export function Time12Picker({
 
       <Select
         {...sharedProps}
-        aria-label={t('attendance:time.meridiem')}
+        aria-label={t('time.meridiem')}
         value={parts.meridiem}
         onChange={(event) =>
           update({ ...parts, meridiem: event.target.value as '' | Meridiem })
         }
       >
-        <option value="">{t('attendance:time.placeholder')}</option>
-        <option value="AM">{t('attendance:time.am')}</option>
-        <option value="PM">{t('attendance:time.pm')}</option>
+        <option value="">{t('time.placeholder')}</option>
+        <option value="AM">{t('time.am')}</option>
+        <option value="PM">{t('time.pm')}</option>
       </Select>
     </div>
   )

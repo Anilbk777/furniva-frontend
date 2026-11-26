@@ -1,9 +1,11 @@
 import {
   CalendarCheck,
+  ClipboardList,
   ContactRound,
   LayoutDashboard,
   Store,
   Users,
+  UsersRound,
   type LucideIcon,
 } from 'lucide-react'
 
@@ -39,6 +41,18 @@ export const navItems: NavItem[] = [
     labelKey: 'dashboard.nav.parties',
     path: paths.parties,
     icon: ContactRound,
+    enabled: true,
+  },
+  {
+    labelKey: 'dashboard.nav.customers',
+    path: paths.customers,
+    icon: UsersRound,
+    enabled: true,
+  },
+  {
+    labelKey: 'dashboard.nav.orders',
+    path: paths.orders,
+    icon: ClipboardList,
     enabled: true,
   },
   {

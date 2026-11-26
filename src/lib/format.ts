@@ -13,6 +13,17 @@ export function formatDate(value: string | null, language: 'en' | 'ne'): string 
   }).format(date)
 }
 
+export function formatDateTime(value: string | null, language: 'en' | 'ne'): string {
+  if (!value) return '—'
+  const date = new Date(value)
+  if (Number.isNaN(date.getTime())) return '—'
+  return new Intl.DateTimeFormat(localeByLanguage[language], {
+    calendar: 'gregory',
+    dateStyle: 'medium',
+    timeStyle: 'short',
+  }).format(date)
+}
+
 export function formatNumber(
   value: number | string | null,
   language: 'en' | 'ne',

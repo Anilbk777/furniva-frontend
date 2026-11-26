@@ -24,6 +24,8 @@
     "employees": "Employees",
     "attendance": "Attendance",
     "parties": "Parties",
+    "customers": "Customers",
+    "orders": "Orders",
     "transactions": "Transactions",
     "organization": "Organization"
   }

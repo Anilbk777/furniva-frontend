@@ -26,6 +26,10 @@ import {
   CardTitle,
 } from 'src/components/ui/Card'
 import { ConfirmDialog } from 'src/components/ui/ConfirmDialog'
+import {
+  DetailPageSkeleton,
+  SkeletonTableRows,
+} from 'src/components/ui/DetailPageSkeleton'
 import { FormField } from 'src/components/ui/FormField'
 import { IconButton } from 'src/components/ui/IconButton'
 import { Modal, ModalContent } from 'src/components/ui/Modal'
@@ -44,7 +48,7 @@ import {
 } from 'src/features/attendance/hooks/useAttendanceMutations'
 import type { AttendanceFormOutput } from 'src/features/attendance/schemas/attendance.schemas'
 import type { AttendanceRecord } from 'src/features/attendance/types'
-import { formatApiTimeDisplay } from 'src/features/attendance/utils/time'
+import { formatApiTimeDisplay } from 'src/lib/time'
 import { mapApiError } from 'src/features/auth'
 import { formatBsDate, todayBs, todayBsString } from 'src/lib/bsCalendar'
 import { cn } from 'src/lib/cn'
@@ -185,22 +189,38 @@ export function EmployeeAttendancePage() {
 
   if (details.isLoading) {
     return (
-      <div className="flex flex-col gap-6">
-        <Skeleton className="h-6 w-40" />
-        <div className="flex items-center gap-3">
-          <Skeleton className="size-12 rounded-pill" />
-          <div className="space-y-2">
-            <Skeleton className="h-6 w-48" />
-            <Skeleton className="h-4 w-32" />
+      <DetailPageSkeleton actions={2}>
+        <Card>
+          <div className="flex flex-wrap items-start justify-between gap-3 p-5">
+            <div className="space-y-2">
+              <Skeleton className="h-6 w-40" />
+              <Skeleton className="h-4 w-56 max-w-full" />
+            </div>
           </div>
-        </div>
-        <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
-          {Array.from({ length: 8 }).map((_, index) => (
-            <Skeleton key={index} className="h-28" />
-          ))}
-        </div>
-        <Skeleton className="h-80" />
-      </div>
+          <CardContent>
+            <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+              {Array.from({ length: 8 }).map((_, index) => (
+                <Skeleton key={index} className="h-24" />
+              ))}
+            </div>
+            <Skeleton className="mt-3 h-4 w-64 max-w-full" />
+          </CardContent>
+        </Card>
+
+        <Card>
+          <div className="flex flex-wrap items-start justify-between gap-3 p-5">
+            <div className="space-y-2">
+              <Skeleton className="h-6 w-36" />
+              <Skeleton className="h-4 w-56 max-w-full" />
+            </div>
+            <Skeleton className="h-11 w-full rounded-sm sm:w-36" />
+          </div>
+          <CardContent className="flex flex-col gap-5">
+            <Skeleton className="h-28 rounded-sm" />
+            <SkeletonTableRows rows={3} />
+          </CardContent>
+        </Card>
+      </DetailPageSkeleton>
     )
   }
 

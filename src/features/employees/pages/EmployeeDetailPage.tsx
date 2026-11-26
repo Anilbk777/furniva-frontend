@@ -23,6 +23,10 @@ import {
   CardTitle,
 } from 'src/components/ui/Card'
 import { ConfirmDialog } from 'src/components/ui/ConfirmDialog'
+import {
+  DetailPageSkeleton,
+  SkeletonTableRows,
+} from 'src/components/ui/DetailPageSkeleton'
 import { FormField } from 'src/components/ui/FormField'
 import { IconButton } from 'src/components/ui/IconButton'
 import { Modal, ModalContent } from 'src/components/ui/Modal'
@@ -209,17 +213,26 @@ export function EmployeeDetailPage() {
 
   if (tx.isLoading) {
     return (
-      <div className="flex flex-col gap-6">
-        <Skeleton className="h-6 w-40" />
-        <div className="flex items-center gap-3">
-          <Skeleton className="size-12 rounded-pill" />
-          <div className="space-y-2">
-            <Skeleton className="h-6 w-48" />
-            <Skeleton className="h-4 w-32" />
+      <DetailPageSkeleton actions={4}>
+        <Card className="min-w-0">
+          <div className="flex flex-col gap-3 p-5 sm:flex-row sm:items-start sm:justify-between">
+            <div className="space-y-2">
+              <Skeleton className="h-6 w-40" />
+              <Skeleton className="h-4 w-56 max-w-full" />
+            </div>
+            <Skeleton className="h-11 w-full rounded-sm sm:w-36" />
           </div>
-        </div>
-        <Skeleton className="h-96" />
-      </div>
+          <CardContent className="flex flex-col gap-5">
+            <div className="grid gap-3 sm:grid-cols-3">
+              {Array.from({ length: 3 }).map((_, index) => (
+                <Skeleton key={index} className="h-20 rounded-sm" />
+              ))}
+            </div>
+            <Skeleton className="h-32 rounded-sm" />
+            <SkeletonTableRows rows={3} />
+          </CardContent>
+        </Card>
+      </DetailPageSkeleton>
     )
   }
 

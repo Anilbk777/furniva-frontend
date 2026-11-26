@@ -58,6 +58,14 @@ const messageKeys: Record<string, string> = {
   'BS date must look like 2081-04-15 (YYYY-MM-DD)': 'errors.attendanceBsDateFormat',
   'This is not a valid BS date': 'errors.attendanceBsDateInvalid',
   'Time must be in 12-hour format like 09:30 AM': 'errors.attendanceTimeInvalid',
+  'Customer not found': 'errors.customerNotFound',
+  'A customer with this mobile number already exists': 'errors.customerMobileTaken',
+  'Order not found': 'errors.orderNotFound',
+  "Advance can't be more than the total amount": 'errors.orderAdvanceTooHigh',
+  'Site delivery needs a delivery address': 'errors.orderAddressRequired',
+  'Customer name, type and mobile are required when no customer is selected':
+    'errors.orderCustomerRequired',
+  'The order could not be saved, please try again': 'errors.orderSaveFailed',
 }
 
 function messageKeyFor(message: string): string | undefined {
@@ -66,7 +74,18 @@ function messageKeyFor(message: string): string | undefined {
     return 'errors.attendanceExists'
   }
   if (message.startsWith('Status must be one of')) {
-    return 'errors.attendanceStatusInvalid'
+    return message.includes('in_progress')
+      ? 'errors.orderStatusInvalid'
+      : 'errors.attendanceStatusInvalid'
+  }
+  if (message.startsWith('Priority must be one of')) return 'errors.orderPriorityInvalid'
+  if (message.startsWith('Handover type must be one of')) return 'errors.orderHandoverInvalid'
+  if (message.startsWith('Choose how the advance was paid')) return 'errors.orderPaymentRequired'
+  if (message.startsWith('Customer type must be one of')) return 'errors.customerTypeRequired'
+  if (message.includes(' order can\'t be edited')) return 'errors.orderLocked'
+  if (message.includes(' order can\'t be changed to ')) return 'errors.orderStatusTransition'
+  if (message.startsWith('Only new or cancelled orders can be deleted')) {
+    return 'errors.orderDeleteBlocked'
   }
   return undefined
 }

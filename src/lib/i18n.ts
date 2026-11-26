@@ -5,9 +5,11 @@ import { initReactI18next } from 'react-i18next'
 import enCommon from 'src/locales/en/common.json'
 import enAuth from 'src/locales/en/auth.json'
 import enAttendance from 'src/locales/en/attendance.json'
+import enCustomers from 'src/locales/en/customers.json'
 import enDashboard from 'src/locales/en/dashboard.json'
 import enEmployees from 'src/locales/en/employees.json'
 import enErrors from 'src/locales/en/errors.json'
+import enOrders from 'src/locales/en/orders.json'
 import enOrganization from 'src/locales/en/organization.json'
 import enParties from 'src/locales/en/parties.json'
 import enPartyTransactions from 'src/locales/en/partyTransactions.json'
@@ -15,9 +17,11 @@ import enTransactions from 'src/locales/en/transactions.json'
 import neCommon from 'src/locales/ne/common.json'
 import neAuth from 'src/locales/ne/auth.json'
 import neAttendance from 'src/locales/ne/attendance.json'
+import neCustomers from 'src/locales/ne/customers.json'
 import neDashboard from 'src/locales/ne/dashboard.json'
 import neEmployees from 'src/locales/ne/employees.json'
 import neErrors from 'src/locales/ne/errors.json'
+import neOrders from 'src/locales/ne/orders.json'
 import neOrganization from 'src/locales/ne/organization.json'
 import neParties from 'src/locales/ne/parties.json'
 import nePartyTransactions from 'src/locales/ne/partyTransactions.json'
@@ -28,9 +32,11 @@ export const resources = {
     common: enCommon,
     auth: enAuth,
     attendance: enAttendance,
+    customers: enCustomers,
     dashboard: enDashboard,
     employees: enEmployees,
     errors: enErrors,
+    orders: enOrders,
     organization: enOrganization,
     parties: enParties,
     partyTransactions: enPartyTransactions,
@@ -40,9 +46,11 @@ export const resources = {
     common: neCommon,
     auth: neAuth,
     attendance: neAttendance,
+    customers: neCustomers,
     dashboard: neDashboard,
     employees: neEmployees,
     errors: neErrors,
+    orders: neOrders,
     organization: neOrganization,
     parties: neParties,
     partyTransactions: nePartyTransactions,
@@ -78,9 +86,11 @@ void i18n.use(detector).use(initReactI18next).init({
     'common',
     'auth',
     'attendance',
+    'customers',
     'dashboard',
     'employees',
     'errors',
+    'orders',
     'organization',
     'parties',
     'partyTransactions',

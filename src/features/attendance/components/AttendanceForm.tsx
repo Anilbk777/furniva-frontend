@@ -9,7 +9,7 @@ import { FormField } from 'src/components/ui/FormField'
 import { Input } from 'src/components/ui/Input'
 import { Label } from 'src/components/ui/Label'
 import { Select } from 'src/components/ui/Select'
-import { Time12Picker } from 'src/features/attendance/components/Time12Picker'
+import { Time12Picker } from 'src/components/ui/Time12Picker'
 import {
   attendanceSchema,
   toAttendanceFormOutput,

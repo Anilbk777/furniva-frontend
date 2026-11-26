@@ -39,7 +39,7 @@ import type {
   AttendanceStatus,
 } from 'src/features/attendance/types'
 import { mapApiError } from 'src/features/auth'
-import { formatApiTimeDisplay } from 'src/features/attendance/utils/time'
+import { formatApiTimeDisplay } from 'src/lib/time'
 import { parseBsDate, todayBsString } from 'src/lib/bsCalendar'
 import { toNepaliDigits } from 'src/lib/bsDate'
 import { cn } from 'src/lib/cn'
@@ -611,11 +611,6 @@ export function AttendancePage() {
         </div>
       ) : null}
 
-      {/* <p className="font-ui text-xs text-charcoal-500">
-        {filtered
-          ? t("attendance:filteredCount", { count: filteredRows.length })
-          : t("attendance:count", { count: totalEmployees })}
-      </p> */}
 
       <Modal
         open={formOpen}

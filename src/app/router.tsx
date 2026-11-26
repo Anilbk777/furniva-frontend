@@ -16,8 +16,10 @@ import {
   AttendancePage,
   EmployeeAttendancePage,
 } from 'src/features/attendance'
+import { CustomerDetailPage, CustomersPage } from 'src/features/customers'
 import { DashboardPage } from 'src/features/dashboard'
 import { EmployeeDetailPage, EmployeesPage } from 'src/features/employees'
+import { OrderDetailPage, OrdersPage } from 'src/features/orders'
 import { PartiesPage, PartyDetailPage } from 'src/features/parties'
 import {
   OrganizationPage,
@@ -74,6 +76,16 @@ export const router = createBrowserRouter([
                       {
                         path: `${paths.parties}/:partyId`,
                         element: <PartyDetailPage />,
+                      },
+                      { path: paths.customers, element: <CustomersPage /> },
+                      {
+                        path: `${paths.customers}/:customerId`,
+                        element: <CustomerDetailPage />,
+                      },
+                      { path: paths.orders, element: <OrdersPage /> },
+                      {
+                        path: `${paths.orders}/:orderId`,
+                        element: <OrderDetailPage />,
                       },
                       { path: paths.organization, element: <OrganizationPage /> },
                     ],

@@ -25,6 +25,14 @@
   "nextMonth": "अर्को महिना",
   "previousYear": "अघिल्लो वर्ष",
   "nextYear": "अर्को वर्ष",
+  "time": {
+    "hour": "घण्टा",
+    "minute": "मिनेट",
+    "meridiem": "पूर्वाह्न/अपराह्न",
+    "placeholder": "--",
+    "am": "पूर्वाह्न",
+    "pm": "अपराह्न"
+  },
   "weekdays": {
     "sun": "आइत",
     "mon": "सोम",
